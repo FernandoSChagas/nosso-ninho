@@ -86,7 +86,6 @@
     <div class="app-shell" id="app-shell">
         <div class="top-nav"><button class="btn-alerta" onclick="mostrarMotivacao()">🔔</button></div>
         
-        <!-- ABA 1: NINHO -->
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
             <div class="card-saldo">
@@ -132,7 +131,6 @@
             <div class="log-container" id="activity-log"></div>
         </div>
 
-        <!-- ABA 2: COFRE -->
         <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
@@ -142,7 +140,6 @@
             <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(42px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
 
-        <!-- ABA 3: ANALYTICS -->
         <div id="tab-stats" class="tab-content">
             <div class="welcome-section"><h2>Ninho Analytics</h2><p>Previsão e <span>Desempenho</span></p></div>
             <div class="card-saldo" style="text-align: left; padding: 25px;">
@@ -159,7 +156,6 @@
             </div>
         </div>
 
-        <!-- RODAPÉ -->
         <div class="footer-tabs">
             <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Ninho</div>
             <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
@@ -167,7 +163,6 @@
             <div class="tab-btn" onclick="logout()"><i>🚪</i>Sair</div>
         </div>
 
-        <!-- MODAL -->
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
@@ -192,20 +187,9 @@
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        let currentMode = 'add';
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
-        
-        const frases = [
-            "Continue que a casa tá ficando pronta! 🏠",
-            "Cada tijolo é um passo mais perto do nosso sonho! ✨",
-            "Nosso ninho está crescendo a cada dia! 🐥",
-            "Orgulho do que estamos construindo juntos! ❤️",
-            "Foco na meta, o futuro nos espera! 🚀",
-            "Mais um tijolo, menos um dia de espera! 🧱",
-            "A fundação está sólida, falta pouco para o telhado! 🏗️",
-            "Tijolo por tijolo, estamos escrevendo nossa história! 📖"
-        ];
-
+        let currentMode = 'add';
+        const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️"];
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort((a,b) => b-a);
 
@@ -217,15 +201,11 @@
                 const name = user.email.includes('fernando') ? 'Fernando' : 'Gabriel';
                 document.getElementById('user-name').innerText = name;
                 conectarFirebase().then(() => {
-                    login.style.display = 'none';
-                    app.style.opacity = '1';
-                    splash.style.opacity = '0';
+                    login.style.display = 'none'; app.style.opacity = '1'; splash.style.opacity = '0';
                     setTimeout(() => splash.style.display = 'none', 400);
                 });
             } else { 
-                login.style.display = 'flex'; 
-                app.style.opacity = '0';
-                splash.style.opacity = '0';
+                login.style.display = 'flex'; app.style.opacity = '0'; splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 400);
             } 
         });
@@ -253,18 +233,15 @@
             const overlay = document.getElementById('break-overlay');
             overlay.innerHTML = ''; overlay.style.display = 'block';
             for(let i=0; i<15; i++){
-                const crack = document.createElement('div');
-                crack.className = 'crack';
-                crack.style.setProperty('--x', Math.random()*100 + '%');
-                crack.style.setProperty('--y', Math.random()*100 + '%');
-                crack.style.setProperty('--r', Math.random()*360 + 'deg');
-                crack.style.setProperty('--h', (Math.random()*100 + 50) + 'px');
+                const crack = document.createElement('div'); crack.className = 'crack';
+                crack.style.setProperty('--x', Math.random()*100 + '%'); crack.style.setProperty('--y', Math.random()*100 + '%');
+                crack.style.setProperty('--r', Math.random()*360 + 'deg'); crack.style.setProperty('--h', (Math.random()*100 + 50) + 'px');
                 overlay.appendChild(crack);
             }
             setTimeout(() => overlay.style.display = 'none', 800);
         }
 
-        function confirmDemolish() { if(confirm("Atenção! Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
+        function confirmDemolish() { if(confirm("Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
 
         function processar() {
             const input = document.getElementById('input-val');
@@ -275,9 +252,7 @@
             else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] }); }
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
             registrarAtividade(user, v, "Ninho");
-            atualizarInterface();
-            input.value = '';
-            salvar();
+            atualizarInterface(); input.value = ''; salvar();
         }
 
         function togglePandora(index) {
@@ -286,19 +261,13 @@
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
             const val = pandoraValues[index];
             if(pos > -1) {
-                if(confirm(`Deseja retirar R$ ${val} do cofre?`)) {
-                    dadosApp.pandora.splice(pos, 1);
-                    registrarAtividade(user, -val, "Cofre");
-                    triggerBreak();
-                    atualizarInterface();
-                    salvar();
+                if(confirm(`Retirar R$ ${val}?`)) {
+                    dadosApp.pandora.splice(pos, 1); registrarAtividade(user, -val, "Cofre");
+                    triggerBreak(); atualizarInterface(); salvar();
                 }
             } else {
-                dadosApp.pandora.push(index);
-                confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
-                registrarAtividade(user, val, "Cofre");
-                atualizarInterface();
-                salvar();
+                dadosApp.pandora.push(index); registrarAtividade(user, val, "Cofre");
+                confetti({ particleCount: 50 }); atualizarInterface(); salvar();
             }
         }
 
@@ -314,25 +283,17 @@
         }
 
         function atualizarInterface() {
-            const sG = dadosApp.saldoG || 0; 
-            const sF = dadosApp.saldoF || 0; 
-            const totalVal = sG + sF;
-            
+            const sG = dadosApp.saldoG || 0; const sF = dadosApp.saldoF || 0; const totalVal = sG + sF;
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
             const arcLength = 126;
-            const percGlobal = (totalVal / 100000);
-            document.getElementById('global-arc').style.strokeDashoffset = arcLength - (arcLength * Math.min(percGlobal, 1));
-            document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal * 100, 100)) + '%';
-
-            const percG = (sG / 50000);
-            document.getElementById('arc-g').style.strokeDashoffset = arcLength - (arcLength * Math.min(percG, 1));
-
-            const percF = (sF / 50000);
-            document.getElementById('arc-f').style.strokeDashoffset = arcLength - (arcLength * Math.min(percF, 1));
+            document.getElementById('global-arc').style.strokeDashoffset = arcLength - (arcLength * Math.min(totalVal/100000, 1));
+            document.getElementById('global-perc').innerText = Math.floor(Math.min((totalVal/100000)*100, 100)) + '%';
+            document.getElementById('arc-g').style.strokeDashoffset = arcLength - (arcLength * Math.min(sG/50000, 1));
+            document.getElementById('arc-f').style.strokeDashoffset = arcLength - (arcLength * Math.min(sF/50000, 1));
 
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
@@ -341,34 +302,32 @@
             }).join('');
             document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('pandora-progress').style.width = (totalP / 5000 * 100) + '%';
-            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,4).map(i => `
-                <div class="log-row"><b>${i.val > 0 ? 'Colocou' : 'Demoliu'} tijolos no ${i.local} - ${i.user}</b>
-                <div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
-                <small>${i.date} às ${i.time}</small></div>`).join('');
+            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,4).map(i => `<div class="log-row"><b>${i.val > 0 ? 'Colocou' : 'Demoliu'} no ${i.local} - ${i.user}</b><div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div><small>${i.date} às ${i.time}</small></div>`).join('');
 
-            // LOGICA NINHO ANALYTICS COM BASE NO "DIA 1"
+            // LOGICA ANALYTICS BLINDADA
             const historico = dadosApp.historico || [];
             if (historico.length >= 1) {
-                const dataInicioStr = historico[historico.length - 1].date.split('/').reverse().join('-');
-                const inicio = new Date(dataInicioStr);
+                let inicio;
+                try {
+                    const dataStr = historico[historico.length - 1].date;
+                    const partes = dataStr.split('/');
+                    inicio = new Date(`${partes[2]}-${partes[1]}-${partes[0]}`);
+                    if (isNaN(inicio.getTime())) inicio = new Date();
+                } catch (e) { inicio = new Date(); }
+
                 const hoje = new Date();
-                
-                // Calcula a diferença em dias (mínimo de 1 dia para evitar divisão por zero)
                 const diffTime = Math.abs(hoje - inicio);
                 const diasPassados = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-                
                 const mediaDiaria = totalVal / diasPassados;
                 const faltaVal = 100000 - totalVal;
                 
                 if (mediaDiaria > 0 && faltaVal > 0) {
                     const diasParaFim = Math.ceil(faltaVal / mediaDiaria);
-                    const dataFinal = new Date();
-                    dataFinal.setDate(hoje.getDate() + diasParaFim);
-
+                    const dataFinal = new Date(); dataFinal.setDate(hoje.getDate() + diasParaFim);
                     document.getElementById('ritmo-diario').innerText = 'R$ ' + mediaDiaria.toLocaleString('pt-BR', {maximumFractionDigits: 2}) + ' / dia';
                     document.getElementById('tempo-restante').innerText = diasParaFim + ' dias';
                     document.getElementById('data-conclusao').innerText = dataFinal.toLocaleDateString('pt-BR');
-                } else if (faltaVal <= 0) {
+                } else if (totalVal >= 100000) {
                     document.getElementById('data-conclusao').innerText = "Meta Atingida! 🎉";
                     document.getElementById('ritmo-diario').innerText = "Concluído";
                     document.getElementById('tempo-restante').innerText = "0";
@@ -377,11 +336,8 @@
         }
 
         function showModal(mode) { 
-            currentMode = mode; 
-            document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "COLOCAR TIJOLO 🧱"; 
-            document.getElementById('modal').style.display = 'flex'; 
-            document.getElementById('input-val').value = '';
-            document.getElementById('input-val').focus(); 
+            currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "COLOCAR TIJOLO 🧱"; 
+            document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').value = ''; document.getElementById('input-val').focus(); 
         }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
     </script>
