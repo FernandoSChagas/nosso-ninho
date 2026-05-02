@@ -3,152 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Cloud</title>
+    <title>Nosso Ninho - Premium</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Nosso Ninho">
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap');
 
         :root {
-            --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #fde2e4 100%);
-            --glass: rgba(255, 255, 255, 0.5);
-            --glass-border: rgba(255, 255, 255, 0.7);
-            --primary-pink: #ffafcc;
-            --primary-blue: #a2d2ff;
-            --active-green: #74c69d;
-            --text-dark: #4a4a4a;
+            --bg: #f8f9fd;
+            --primary: #ffafcc;
+            --secondary: #a2d2ff;
+            --accent: #bde0fe;
+            --success: #74c69d;
             --danger: #ff8fa3;
+            --text: #2d3436;
+            --glass: rgba(255, 255, 255, 0.8);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-        body { background: var(--bg-gradient); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 10px; }
+        body { background: var(--bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: var(--text); }
 
-        .iphone-frame {
-            width: 100%; max-width: 400px; height: 96dvh;
-            background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-radius: 40px; border: 2px solid var(--glass-border);
-            display: flex; flex-direction: column; padding: 20px 15px 80px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.08); position: relative;
+        /* Container Principal */
+        .app-container {
+            width: 100%; max-width: 414px; height: 100dvh;
+            background: #fff; position: relative;
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
         }
 
-        .tab-bar {
-            position: absolute; bottom: 15px; left: 15px; right: 15px;
-            height: 65px; background: rgba(255,255,255,0.85);
-            border-radius: 25px; display: flex; align-items: center; justify-content: space-around;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); z-index: 1000;
-        }
-        .tab-item { flex: 1; text-align: center; font-size: 0.75rem; color: #b2bec3; font-weight: 700; cursor: pointer; }
-        .tab-item.active { color: var(--text-dark); }
-        .tab-item span { display: block; font-size: 1.2rem; }
-
-        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; scrollbar-width: none; }
-        .tab-content::-webkit-scrollbar { display: none; }
-        .tab-content.active { display: flex; }
-
+        /* Login Renovado */
         #login-screen {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: var(--bg-gradient); z-index: 2000; border-radius: 40px;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; text-align: center;
+            position: absolute; inset: 0; z-index: 5000;
+            background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+            display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px;
+        }
+        .login-box {
+            background: var(--glass); backdrop-filter: blur(10px);
+            padding: 30px; border-radius: 30px; width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;
         }
 
-        .login-input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 20px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.6); font-size: 1rem; }
+        /* Header */
+        .header { padding: 40px 25px 20px; text-align: left; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text); }
+        .header p { font-size: 0.85rem; color: #b2bec3; font-weight: 400; }
 
-        /* DASHBOARD */
-        .user-card { flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 22px; padding: 10px; text-align: center; border: 1.5px solid var(--glass-border); }
-        .avatar-img { width: 55px; height: 55px; border-radius: 50%; margin: 0 auto 8px; overflow: hidden; background: #fff; border: 3px solid transparent; }
-        .avatar-img img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .balance-display { text-align: center; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 25px; width: 100%; margin-bottom: 15px; }
-        .balance-display h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; }
-        
-        .actions-row { display: flex; gap: 10px; margin-top: 5px; }
-        .btn-add { background: linear-gradient(135deg, #ffafcc, #ffc8dd); color: white; border: none; width: 100%; padding: 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; cursor: pointer; flex: 1; }
-        .btn-remove { background: #fff; color: var(--danger); border: 2px solid var(--danger); padding: 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; cursor: pointer; flex: 1; }
+        /* Dashboard */
+        .main-card {
+            margin: 0 20px; padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #ffc8dd 100%);
+            border-radius: 35px; color: white; text-align: center;
+            box-shadow: 0 15px 35px rgba(255, 175, 204, 0.3);
+        }
+        .main-card h2 { font-size: 2.2rem; margin: 10px 0; letter-spacing: -1px; }
 
-        /* PROGRESS BARS */
-        .mini-progress { background: rgba(255,255,255,0.5); height: 8px; border-radius: 20px; margin: 8px 0; overflow: hidden; border: 1px solid var(--glass-border); }
-        .fill { height: 100%; transition: width 1s; width: 0%; }
+        /* Cards de Usuário */
+        .user-row { display: flex; gap: 15px; padding: 25px 20px; }
+        .u-card {
+            flex: 1; background: #fff; padding: 15px; border-radius: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; align-items: center;
+            border: 1px solid #f1f2f6;
+        }
+        .avatar { width: 50px; height: 50px; border-radius: 18px; margin-bottom: 10px; object-fit: cover; }
+        .u-card span { font-weight: 700; font-size: 0.9rem; }
 
-        /* PANDORA GRID */
-        .pandora-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 4px; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 20px; }
-        .grid-item { aspect-ratio: 1; background: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: #888; cursor: pointer; border: 1px solid #f0f0f0; }
-        .grid-item.painted { background: var(--active-green); color: white; border-color: transparent; }
+        /* Barra de Progresso Custom */
+        .p-bar { width: 100%; height: 6px; background: #f1f2f6; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+        .p-fill { height: 100%; width: 0%; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        #modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: white; padding: 25px; border-radius: 30px; z-index: 3000; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
-        #modal input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 18px; border: 1px solid #eee; font-size: 1.1rem; text-align: center; outline: none; }
+        /* Atividades */
+        .section-title { padding: 0 25px; font-size: 0.9rem; font-weight: 700; color: #b2bec3; margin-bottom: 10px; }
+        .log-container { flex: 1; padding: 0 25px; overflow-y: auto; }
+        .log-item {
+            background: #fff; padding: 12px 15px; border-radius: 18px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01); border-left: 4px solid var(--secondary);
+        }
+
+        /* Botões */
+        .actions { display: flex; gap: 12px; padding: 20px 25px 100px; }
+        .btn {
+            flex: 1; padding: 18px; border-radius: 20px; border: none;
+            font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.3s;
+        }
+        .btn-build { background: var(--text); color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-demo { background: #fff; color: var(--danger); border: 2px solid #fff3f5; }
+
+        /* Pandora Grid */
+        .pandora-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            gap: 8px; padding: 20px;
+        }
+        .p-item {
+            aspect-ratio: 1; background: #fff; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6rem; font-weight: 700; color: #dfe6e9;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02); cursor: pointer;
+        }
+        .p-item.active { background: var(--success); color: white; transform: scale(1.1); box-shadow: 0 5px 15px rgba(116, 198, 157, 0.3); }
+
+        /* Tab Bar */
+        .nav {
+            position: absolute; bottom: 0; width: 100%; height: 80px;
+            background: var(--glass); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid #f1f2f6; padding-bottom: 15px;
+        }
+        .nav-item { text-align: center; color: #b2bec3; font-size: 0.7rem; font-weight: 700; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { display: block; font-size: 1.4rem; margin-bottom: 4px; font-style: normal; }
+
+        /* Modal */
+        #modal {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 6000; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: white; width: 100%; border-radius: 35px; padding: 30px;
+            text-align: center; animation: slideUp 0.4s ease;
+        }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="iphone-frame">
+    <div class="app-container">
+        
         <div id="login-screen">
-            <h2 style="margin-bottom: 25px; font-family: 'Playfair Display', serif;">Nosso Ninho ☁️</h2>
-            <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail">
-            <input type="password" id="login-pass" class="login-input" placeholder="Sua senha">
-            <button class="btn-add" onclick="login()" style="width: 100%;">Entrar</button>
-            <p id="login-error" style="color:red; font-size:0.7rem; margin-top:10px;"></p>
+            <div class="login-box">
+                <h1 style="font-family:'Playfair Display'; margin-bottom:10px;">Nosso Ninho</h1>
+                <p style="margin-bottom:25px; color:#b2bec3;">Bem-vindo ao seu porto seguro</p>
+                <input type="email" id="login-email" class="btn" style="background:#f1f2f6; margin-bottom:10px; width:100%; text-align:center;" placeholder="E-mail">
+                <input type="password" id="login-pass" class="btn" style="background:#f1f2f6; margin-bottom:20px; width:100%; text-align:center;" placeholder="Senha">
+                <button class="btn btn-build" onclick="login()" style="width:100%">Entrar no Ninho</button>
+                <p id="login-error" style="color:var(--danger); font-size:0.7rem; margin-top:15px;"></p>
+            </div>
         </div>
 
-        <div id="tab-ninho" class="tab-content active">
-            <div style="margin-bottom: 15px;">
-                <h1 id="welcome-msg" style="font-size: 1.2rem;">Bem-vindo...</h1>
-                <p style="font-size: 0.75rem; opacity: 0.8;">Construindo sonhos ✨</p>
+        <div id="tab-ninho" class="tab-content active" style="display:flex; flex-direction:column; height:100%;">
+            <div class="header">
+                <p id="welcome-msg">Carregando...</p>
+                <h1>Painel da Construção</h1>
             </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <div class="user-card">
-                    <div class="avatar-img" style="border-color: var(--primary-blue)"><img src="foto-gabriel.png"></div>
-                    <div class="mini-progress"><div id="bar-g" class="fill" style="background:var(--primary-blue)"></div></div>
-                    <p style="font-size: 0.7rem; font-weight: 700;">R$ <span id="val-g">0</span></p>
-                </div>
-                <div class="user-card">
-                    <div class="avatar-img" style="border-color: var(--primary-pink)"><img src="foto-fernando.png"></div>
-                    <div class="mini-progress"><div id="bar-f" class="fill" style="background:var(--primary-pink)"></div></div>
-                    <p style="font-size: 0.7rem; font-weight: 700;">R$ <span id="val-f">0</span></p>
-                </div>
-            </div>
-            <div class="balance-display">
+
+            <div class="main-card">
+                <p style="font-size:0.8rem; opacity:0.9; font-weight:700;">SALDO TOTAL DO NINHO</p>
                 <h2 id="total">R$ 0</h2>
+                <div style="font-size:0.7rem; opacity:0.8;">Meta de R$ 100.000</div>
             </div>
-            <!-- Lista reduzida visualmente -->
-            <div id="activity-log" style="flex:1; overflow: hidden; margin-bottom:15px;"></div>
-            
-            <div class="actions-row">
-                <button class="btn-add" onclick="showModal('add')">Construir 🧱</button>
-                <button class="btn-remove" onclick="showModal('remove')">Demolir 🔨</button>
+
+            <div class="user-row">
+                <div class="u-card">
+                    <img src="foto-gabriel.png" class="avatar" style="border: 2px solid var(--secondary)">
+                    <span>R$ <small id="val-g">0</small></span>
+                    <div class="p-bar"><div id="bar-g" class="p-fill" style="background:var(--secondary)"></div></div>
+                </div>
+                <div class="u-card">
+                    <img src="foto-fernando.png" class="avatar" style="border: 2px solid var(--primary)">
+                    <span>R$ <small id="val-f">0</small></span>
+                    <div class="p-bar"><div id="bar-f" class="p-fill" style="background:var(--primary)"></div></div>
+                </div>
             </div>
-            <button onclick="logout()" style="margin-top:10px; background:none; border:none; color:#888; font-size:0.65rem; font-weight:700; cursor:pointer; width: 100%;">🚪 Sair</button>
+
+            <p class="section-title">ATIVIDADES RECENTES</p>
+            <div id="activity-log" class="log-container"></div>
+
+            <div class="actions">
+                <button class="btn btn-build" onclick="showModal('add')">CONSTRUIR 🧱</button>
+                <button class="btn btn-demo" onclick="showModal('remove')">DEMOLIR 🔨</button>
+            </div>
         </div>
 
-        <div id="tab-pandora" class="tab-content">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <h1 style="font-family: 'Playfair Display', serif; font-size: 1.3rem;">Caixa de Pandora 🎁</h1>
-                <h2 id="pandora-status" style="font-size: 1rem; color: var(--active-green);">R$ 0 / R$ 5.000</h2>
-                <div class="mini-progress" style="height: 12px;"><div id="pandora-bar" class="fill" style="background:var(--active-green)"></div></div>
+        <div id="tab-pandora" class="tab-content" style="display:none; flex-direction:column; height:100%;">
+            <div class="header">
+                <p>OBJETIVO ESPECIAL</p>
+                <h1>Caixa de Pandora</h1>
+            </div>
+            <div style="margin: 0 25px 20px; background:var(--success); padding:20px; border-radius:25px; color:white; text-align:center;">
+                <h3 id="pandora-status">R$ 0</h3>
+                <p style="font-size:0.7rem; opacity:0.8;">Progresso até R$ 5.000</p>
+                <div class="p-bar" style="background:rgba(255,255,255,0.2); height:10px;"><div id="pandora-bar" class="p-fill" style="background:#fff"></div></div>
             </div>
             <div id="grid-container" class="pandora-grid"></div>
         </div>
 
-        <div class="tab-bar">
-            <div class="tab-item active" onclick="switchTab('ninho', this)"><span>🏠</span>Ninho</div>
-            <div class="tab-item" onclick="switchTab('pandora', this)"><span>🎁</span>Pandora</div>
+        <div class="nav">
+            <div class="nav-item active" id="nav-home" onclick="switchTab('ninho', this)"><i>🏠</i>Ninho</div>
+            <div class="nav-item" id="nav-gift" onclick="switchTab('pandora', this)"><i>🎁</i>Pandora</div>
+            <div class="nav-item" onclick="logout()"><i>🚪</i>Sair</div>
         </div>
 
         <div id="modal">
-            <h3 id="modal-title" style="font-weight: 700;">Novo Tijolinho 🧱</h3>
-            <input type="number" id="input-val" placeholder="0.00" inputmode="decimal">
-            <div style="display:flex; gap:10px;">
-                <button onclick="processar()" id="btn-confirmar" style="flex:1.5; background:var(--primary-blue); color:white; border:none; padding:15px; border-radius:18px; font-weight:700;">Confirmar</button>
-                <button onclick="hideModal()" style="flex:1; background:#f5f5f5; border:none; padding:15px; border-radius:18px; font-weight:700; color:#888;">Voltar</button>
+            <div class="modal-content">
+                <h3 id="modal-title" style="margin-bottom:20px;">Adicionar</h3>
+                <input type="number" id="input-val" class="btn" style="background:#f1f2f6; width:100%; text-align:center; font-size:1.5rem; margin-bottom:20px;" placeholder="0,00">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-build" onclick="processar()" id="btn-confirmar">Confirmar</button>
+                    <button class="btn" style="background:#f1f2f6; color:#b2bec3" onclick="hideModal()">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -167,7 +229,7 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         let currentMode = 'add'; 
-        
+
         const rawValues = [
             ...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20),
             ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)
@@ -181,7 +243,7 @@
             if (user) {
                 document.getElementById('login-screen').style.display = 'none';
                 currentUser = user.email.toLowerCase().includes('fernando') ? 'Fernando' : 'Gabriel';
-                document.getElementById('welcome-msg').innerText = `Ninho do ${currentUser}`;
+                document.getElementById('welcome-msg').innerText = `Olá, ${currentUser} 👋`;
                 conectarFirebase();
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
@@ -193,17 +255,17 @@
             const p = document.getElementById('login-pass').value;
             if(!e || !p) return;
             auth.signInWithEmailAndPassword(e, p).catch(() => {
-                document.getElementById('login-error').innerText = "Erro no login.";
+                document.getElementById('login-error').innerText = "Credenciais inválidas.";
             });
         }
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            el.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('tab-' + tab).style.display = 'flex';
+            if(el) el.classList.add('active');
         }
 
         function conectarFirebase() {
@@ -222,13 +284,9 @@
             let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
 
-            // Se for modo remover, torna o valor negativo
             if(currentMode === 'remove') {
                 const saldoAtual = currentUser === 'Gabriel' ? (dadosApp.saldoG || 0) : (dadosApp.saldoF || 0);
-                if(v > saldoAtual) {
-                    alert("Você não pode remover mais do que construiu! Não demola a casa 🏠");
-                    return;
-                }
+                if(v > saldoAtual) { alert("Saldo insuficiente!"); return; }
                 v = -v;
             }
 
@@ -260,7 +318,6 @@
             document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
             document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
             
-            // Barras de progresso individuais (Meta 50k)
             document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
             document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
 
@@ -269,32 +326,29 @@
             container.innerHTML = pandoraValues.map((v, i) => {
                 const isPainted = (dadosApp.pandora || []).includes(i);
                 if(isPainted) totalPandora += v;
-                return `<div class="grid-item ${isPainted ? 'painted' : ''}" onclick="togglePandora(${i})">${v}</div>`;
+                return `<div class="p-item ${isPainted ? 'active' : ''}" onclick="togglePandora(${i})">${v}</div>`;
             }).join('');
 
             document.getElementById('pandora-bar').style.width = (totalPandora / 5000 * 100) + '%';
-            document.getElementById('pandora-status').innerText = `R$ ${totalPandora.toLocaleString('pt-BR')} / R$ 5.000`;
+            document.getElementById('pandora-status').innerText = `R$ ${totalPandora.toLocaleString('pt-BR')}`;
             
-            // Atividades limitadas às 5 últimas
             document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
-                <div style="font-size: 0.65rem; padding: 6px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span><strong>${i.user}</strong> ${i.val > 0 ? 'adicionou' : 'removeu'} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</span>
-                    <span style="opacity:0.4">${i.date}</span>
+                <div class="log-item" style="border-color: ${i.user === 'Gabriel' ? 'var(--secondary)' : 'var(--primary)'}">
+                    <div style="font-size:0.75rem">
+                        <b>${i.user}</b> <br>
+                        <small style="color:#b2bec3">${i.date}</small>
+                    </div>
+                    <div style="font-weight:700; color:${i.val > 0 ? 'var(--success)' : 'var(--danger)'}">
+                        ${i.val > 0 ? '+' : '-'} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}
+                    </div>
                 </div>
             `).join('');
         }
 
         function showModal(mode) { 
             currentMode = mode;
-            const title = document.getElementById('modal-title');
-            if(mode === 'remove') {
-                title.innerText = "Demolir Tijolinho 🔨";
-                title.style.color = "var(--danger)";
-            } else {
-                title.innerText = "Novo Tijolinho 🧱";
-                title.style.color = "var(--text-dark)";
-            }
-            document.getElementById('modal').style.display = 'block'; 
+            document.getElementById('modal-title').innerText = mode === 'remove' ? "Demolir 🔨" : "Construir 🧱";
+            document.getElementById('modal').style.display = 'flex'; 
             document.getElementById('input-val').value = '';
             document.getElementById('input-val').focus();
         }
