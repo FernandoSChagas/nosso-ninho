@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Premium</title>
+    <title>Nosso Ninho - Home</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
@@ -139,7 +139,7 @@
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin-bottom:25px; outline:none;" placeholder="0" inputmode="decimal">
+                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0" inputmode="decimal">
                 <div style="display:flex; gap:10px;">
                     <button style="flex:2; padding:15px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()">Confirmar</button>
                     <button style="flex:1; padding:15px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
@@ -166,9 +166,9 @@
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
 
-        // SONS INTERATIVOS
-        const sndPalmas = new Audio('https://www.myinstants.com/media/sounds/applause_8.mp3');
-        const sndTriste = new Audio('https://www.myinstants.com/media/sounds/aaaaa_5.mp3');
+        // SONS ATUALIZADOS
+        const sndApplause = new Audio('https://www.soundjay.com/human/applause-01.mp3');
+        const sndSad = new Audio('https://www.myinstants.com/media/sounds/sad-trombone.mp3');
 
         auth.onAuthStateChanged(user => { 
             if (user) { 
@@ -205,7 +205,7 @@
             }
         }
 
-        function confirmDemolish() { if(confirm("Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
+        function confirmDemolish() { if(confirm("Atenção! Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
 
         function processar() {
             const input = document.getElementById('input-val');
@@ -215,10 +215,10 @@
 
             if(currentMode === 'remove') {
                 v = -v;
-                sndTriste.play(); // SOM DE TRISTEZA
+                sndSad.play(); // SOM DE TRISTEZA
             } else {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] });
-                sndPalmas.play(); // SOM DE PALMAS
+                sndApplause.play(); // SOM DE PALMAS
             }
 
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
@@ -236,13 +236,13 @@
                 if(confirm("Deseja retirar este valor do cofre?")) {
                     dadosApp.pandora.splice(pos, 1);
                     registrarAtividade(user, -val, "Cofre");
-                    sndTriste.play(); // SOM DE TRISTEZA
+                    sndSad.play(); // SOM DE TRISTEZA
                 }
             } else {
                 dadosApp.pandora.push(index);
                 confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
                 registrarAtividade(user, val, "Cofre");
-                sndPalmas.play(); // SOM DE PALMAS
+                sndApplause.play(); // SOM DE PALMAS
             }
             salvar();
         }
@@ -299,7 +299,7 @@
         function showModal(mode) { currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "NOVO INVESTIMENTO 🧱"; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
 
-        // PULL-TO-REFRESH (Lógica Simples para GitHub Pages)
+        // PULL-TO-REFRESH
         let touchStart = 0;
         window.addEventListener('touchstart', (e) => touchStart = e.touches[0].pageY);
         window.addEventListener('touchmove', (e) => {
