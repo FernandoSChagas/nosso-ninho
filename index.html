@@ -86,6 +86,7 @@
     <div class="app-shell" id="app-shell">
         <div class="top-nav"><button class="btn-alerta" onclick="mostrarMotivacao()">🔔</button></div>
         
+        <!-- ABA 1: NINHO -->
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
             <div class="card-saldo">
@@ -131,6 +132,7 @@
             <div class="log-container" id="activity-log"></div>
         </div>
 
+        <!-- ABA 2: COFRE -->
         <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
@@ -140,12 +142,32 @@
             <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(42px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
 
+        <!-- ABA 3: ANALYTICS -->
+        <div id="tab-stats" class="tab-content">
+            <div class="welcome-section"><h2>Ninho Analytics</h2><p>Previsão e <span>Desempenho</span></p></div>
+            <div class="card-saldo" style="text-align: left; padding: 25px;">
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Ritmo médio de tijolos:</p>
+                <h3 id="ritmo-diario" style="margin-bottom: 18px; font-weight: 800;">R$ 0,00 / dia</h3>
+                
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Dias restantes estimados:</p>
+                <h3 id="tempo-restante" style="margin-bottom: 18px; font-weight: 800;">--- dias</h3>
+                
+                <div style="background: var(--ninho-bg); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #eee;">
+                    <p style="font-size: 0.7rem; font-weight: 700; color: var(--ninho-gold); text-transform: uppercase; letter-spacing: 1px;">Previsão de Conclusão</p>
+                    <h2 id="data-conclusao" style="font-size: 1.6rem; margin-top: 8px; font-weight: 800; color: var(--text-main);">-- / -- / ----</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- RODAPÉ -->
         <div class="footer-tabs">
             <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Ninho</div>
             <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
+            <div class="tab-btn" id="btn-stats" onclick="switchTab('stats', this)"><i>📊</i>Analytics</div>
             <div class="tab-btn" onclick="logout()"><i>🚪</i>Sair</div>
         </div>
 
+        <!-- MODAL -->
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
@@ -180,15 +202,8 @@
             "Orgulho do que estamos construindo juntos! ❤️",
             "Foco na meta, o futuro nos espera! 🚀",
             "Mais um tijolo, menos um dia de espera! 🧱",
-            "Onde há amor e foco, há um lar sendo feito! 👷‍♂️",
             "A fundação está sólida, falta pouco para o telhado! 🏗️",
-            "Nossa disciplina hoje é o conforto de amanhã! ☕",
-            "Nada vence a nossa união rumo aos 100k! 💪",
-            "Quem planeja, realiza. Estamos no caminho certo! 📍",
-            "A paz de um lar próprio não tem preço. Avante! 🌅",
-            "Tijolo por tijolo, estamos escrevendo nossa história! 📖",
-            "O esforço é temporário, a casa é para sempre! 🌳",
-            "Vocês são um time imbatível. Mantenham o ritmo! 👫"
+            "Tijolo por tijolo, estamos escrevendo nossa história! 📖"
         ];
 
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
@@ -256,12 +271,9 @@
             let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
-            
             if(currentMode === 'remove') { v = -v; triggerBreak(); } 
             else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] }); }
-            
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
-            
             registrarAtividade(user, v, "Ninho");
             atualizarInterface();
             input.value = '';
@@ -312,17 +324,13 @@
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
             const arcLength = 126;
-
-            // Meta Geral (100k)
             const percGlobal = (totalVal / 100000);
             document.getElementById('global-arc').style.strokeDashoffset = arcLength - (arcLength * Math.min(percGlobal, 1));
             document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal * 100, 100)) + '%';
 
-            // Meta Individual Gabriel (50k)
             const percG = (sG / 50000);
             document.getElementById('arc-g').style.strokeDashoffset = arcLength - (arcLength * Math.min(percG, 1));
 
-            // Meta Individual Fernando (50k)
             const percF = (sF / 50000);
             document.getElementById('arc-f').style.strokeDashoffset = arcLength - (arcLength * Math.min(percF, 1));
 
@@ -337,6 +345,29 @@
                 <div class="log-row"><b>${i.val > 0 ? 'Colocou' : 'Demoliu'} tijolos no ${i.local} - ${i.user}</b>
                 <div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
                 <small>${i.date} às ${i.time}</small></div>`).join('');
+
+            // LOGICA NINHO ANALYTICS
+            const historico = dadosApp.historico || [];
+            if (historico.length > 1) {
+                const dataInicioStr = historico[historico.length - 1].date.split('/').reverse().join('-');
+                const inicio = new Date(dataInicioStr);
+                const hoje = new Date();
+                const diasPassados = Math.max(1, Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)));
+                const mediaDiaria = totalVal / diasPassados;
+                const faltaVal = 100000 - totalVal;
+                
+                if (mediaDiaria > 0 && faltaVal > 0) {
+                    const diasParaFim = Math.ceil(faltaVal / mediaDiaria);
+                    const dataFinal = new Date();
+                    dataFinal.setDate(hoje.getDate() + diasParaFim);
+
+                    document.getElementById('ritmo-diario').innerText = 'R$ ' + mediaDiaria.toLocaleString('pt-BR', {maximumFractionDigits: 2}) + ' / dia';
+                    document.getElementById('tempo-restante').innerText = diasParaFim + ' dias';
+                    document.getElementById('data-conclusao').innerText = dataFinal.toLocaleDateString('pt-BR');
+                } else if (faltaVal <= 0) {
+                    document.getElementById('data-conclusao').innerText = "Meta Atingida! 🎉";
+                }
+            }
         }
 
         function showModal(mode) { 
