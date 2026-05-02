@@ -10,7 +10,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -23,7 +22,6 @@
             --ninho-bg: #f9f9f7;
             --text-main: #2d2d2d;
             --text-muted: #8e8e93;
-            --card-white: #ffffff;
             --success-green: #34c759;
             --danger-red: #ff3b30;
         }
@@ -38,43 +36,34 @@
 
         .top-nav { padding: 40px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* DASHBOARD */
         .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 120px; }
         .tab-content.active { display: flex; }
 
-        .welcome-section { padding: 10px 20px 20px; }
+        .welcome-section { padding: 10px 20px 10px; }
         .welcome-section span { color: var(--ninho-gold); font-weight: 700; }
 
-        .card-saldo { margin: 0 20px 15px; padding: 25px; background: var(--card-white); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
-        .total-amount { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
-
-        /* CARDS INDIVIDUAIS GABRIEL E FERNANDO */
+        .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
+        
+        /* GAUGE CHART */
+        .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
+        .gauge-svg { width: 100%; height: 100%; }
+        .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
+        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 2s ease; }
+        
         .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
-        .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .user-mini-card b { font-size: 0.8rem; display: block; margin-bottom: 5px; }
-        .user-mini-card span { font-size: 0.75rem; font-weight: 800; color: var(--ninho-gold); }
+        .user-mini-card { flex: 1; background: white; padding: 12px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .user-mini-card img { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; border: 2px solid #f1f1f1; }
+        .user-mini-card b { font-size: 0.75rem; display: block; }
 
-        .card-meta { margin: 0 20px 15px; padding: 20px; background: var(--card-white); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px; }
-        .progress-track { width: 100%; height: 6px; background: #f0f0f0; border-radius: 10px; margin-top: 8px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--ninho-gold); transition: width 1.5s ease; border-radius: 10px; width: 0%; }
-
-        /* BOTÕES DE AÇÃO */
         .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
-        .btn-action { flex: 1; padding: 18px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-        .btn-investir { background: var(--text-main); color: white; }
-        .btn-demolir { background: white; color: var(--danger-red); border: 1px solid #eee; }
+        .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
 
-        .log-container { padding: 0 20px; }
-        .log-row { padding: 15px 0; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
-
-        /* FOOTER */
         .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .tab-btn.active { color: var(--ninho-gold); }
 
-        /* MODAL */
+        .tile { border-radius: 8px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid #eee; cursor: pointer; }
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 30px; }
-        .modal-card { background: white; width: 100%; padding: 35px; border-radius: 35px; text-align: center; }
     </style>
 </head>
 <body>
@@ -85,52 +74,56 @@
             <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
             <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
             <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
-            <p id="login-error" style="color:red; font-size:0.7rem; margin-top:10px;"></p>
         </div>
 
-        <div class="top-nav">
-            <span style="font-size: 1.5rem;">≡</span>
-            <span style="font-size: 1.5rem;">🔔</span>
-        </div>
+        <div class="top-nav"><span>≡</span><span>🔔</span></div>
 
-        <!-- ABA INÍCIO -->
         <div id="tab-ninho" class="tab-content active">
-            <div class="welcome-section">
-                <h2 id="welcome-msg">Olá! 👋</h2>
-                <p>Vamos construir seu <span>novo lar!</span></p>
-            </div>
+            <div class="welcome-section"><h2 id="welcome-msg">Olá! 👋</h2><p>Vamos construir seu <span>novo lar!</span></p></div>
 
             <div class="card-saldo">
-                <h3 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Saldo Acumulado</h3>
-                <div class="total-amount" id="total">R$ 0,00</div>
-                <div style="font-size: 0.75rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (CDI 115%)</div>
+                <div class="chart-box">
+                    <svg class="gauge-svg" viewBox="0 0 100 50">
+                        <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
+                        <path id="global-arc" class="gauge-fill" style="stroke:var(--ninho-gold)" d="M10,45 A35,35 0 0,1 90,45" />
+                    </svg>
+                    <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.2rem;">0%</div>
+                </div>
+                <h2 id="total" style="font-size: 1.6rem; margin-top: 5px;">R$ 0,00</h2>
+                <div style="font-size: 0.7rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (CDI 115%)</div>
             </div>
 
             <div class="users-row">
-                <div class="user-mini-card"><b>Gabriel</b><span id="val-g">R$ 0</span></div>
-                <div class="user-mini-card"><b>Fernando</b><span id="val-f">R$ 0</span></div>
-            </div>
-
-            <div class="card-meta">
-                <div style="font-size: 1.5rem;">🎯</div>
-                <div style="flex:1;">
-                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Meta 100K</p>
-                    <div class="progress-track"><div id="global-bar" class="progress-fill"></div></div>
+                <div class="user-mini-card">
+                    <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
+                    <b>Gabriel</b>
+                    <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" /><path id="arc-g" class="gauge-fill" style="stroke:#34c759" d="M10,45 A35,35 0 0,1 90,45" /></svg></div>
+                    <span id="val-g" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
                 </div>
-                <span id="global-perc" style="font-size:0.75rem; font-weight:800; color:var(--ninho-gold)">0%</span>
+                <div class="user-mini-card">
+                    <img src="foto-fernando.png" onerror="this.src='https://ui-avatars.com/api/?name=Fernando&background=fbb000&color=fff'">
+                    <b>Fernando</b>
+                    <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" /><path id="arc-f" class="gauge-fill" style="stroke:#007aff" d="M10,45 A35,35 0 0,1 90,45" /></svg></div>
+                    <span id="val-f" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
+                </div>
             </div>
 
             <div class="actions-row">
-                <button class="btn-action btn-investir" onclick="showModal('add')">INVESTIR 🧱</button>
-                <button class="btn-action btn-demolir" onclick="showModal('remove')">DEMOLIR 🔨</button>
+                <button class="btn-action" style="background:#2d2d2d; color:white;" onclick="showModal('add')">INVESTIR 🧱</button>
+                <button class="btn-action" style="background:white; color:var(--danger-red); border:1px solid #eee;" onclick="confirmDemolish()">DEMOLIR 🔨</button>
             </div>
 
             <div class="log-container" id="activity-log"></div>
         </div>
 
-        <!-- ABA PANDORA -->
         <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
+            <div class="card-saldo">
+                <h2 id="pandora-status" style="font-size: 1.5rem;">R$ 0,00</h2>
+                <div style="height:8px; background:#f0f0f0; border-radius:10px; margin-top:10px; overflow:hidden;">
+                    <div id="pandora-progress" style="height:100%; width:0%; background:var(--success-green); transition:1s;"></div>
+                </div>
+            </div>
             <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(40px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
 
@@ -141,12 +134,12 @@
         </div>
 
         <div id="modal">
-            <div class="modal-card">
+            <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin-bottom:25px; outline:none; font-weight:800;" placeholder="0">
-                <div style="display:flex; gap:12px;">
-                    <button style="flex:2; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()" id="btn-confirmar">Confirmar</button>
-                    <button style="flex:1; padding:18px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
+                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0">
+                <div style="display:flex; gap:10px;">
+                    <button style="flex:2; padding:15px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()">Confirmar</button>
+                    <button style="flex:1; padding:15px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
                 </div>
             </div>
         </div>
@@ -170,27 +163,15 @@
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('login-screen').style.display = 'none';
-                conectarFirebase();
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-            }
-        });
+        auth.onAuthStateChanged(user => { if (user) { document.getElementById('login-screen').style.display = 'none'; conectarFirebase(); } else { document.getElementById('login-screen').style.display = 'flex'; } });
 
-        function login() {
-            const e = document.getElementById('login-email').value;
-            const p = document.getElementById('login-pass').value;
-            auth.signInWithEmailAndPassword(e, p).catch(() => document.getElementById('login-error').innerText = "Erro de acesso.");
-        }
-
+        function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p).catch(() => alert("Erro de acesso.")); }
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('tab-' + tab).style.display = 'flex';
             if(el) el.classList.add('active');
         }
 
@@ -202,24 +183,38 @@
             setTimeout(conectarFirebase, 5000);
         }
 
+        function setArc(id, percent) {
+            const path = document.getElementById(id);
+            if(path) {
+                const dash = 251 - (251 * (Math.min(percent, 100) / 100));
+                path.style.strokeDashoffset = dash;
+            }
+        }
+
+        function confirmDemolish() { if(confirm("Atenção! Você está prestes a demolir uma parte da casa. Deseja continuar?")) { showModal('remove'); } }
+
         function processar() {
             const input = document.getElementById('input-val');
             let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
-            const currentUser = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
+            const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
 
             if(currentMode === 'remove') v = -v;
             else confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] });
 
-            if(currentUser === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
-            dadosApp.historico.unshift({ user: currentUser, val: v, date: new Date().toLocaleDateString('pt-BR'), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+            if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
+            dadosApp.historico.unshift({ user: user, val: v, date: new Date().toLocaleDateString('pt-BR'), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
             salvar();
         }
 
         function togglePandora(index) {
             if(!dadosApp.pandora) dadosApp.pandora = [];
             const pos = dadosApp.pandora.indexOf(index);
-            if(pos > -1) dadosApp.pandora.splice(pos, 1); else dadosApp.pandora.push(index);
+            if(pos > -1) dadosApp.pandora.splice(pos, 1); 
+            else { 
+                dadosApp.pandora.push(index); 
+                confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
+            }
             salvar();
         }
 
@@ -233,23 +228,27 @@
             const sG = dadosApp.saldoG || 0;
             const sF = dadosApp.saldoF || 0;
             const totalVal = sG + sF;
-            const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
             
-            document.getElementById('welcome-msg').innerText = `Olá, ${user}! 👋`;
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
-            const perc = Math.min((totalVal / 100000 * 100), 100);
-            document.getElementById('global-bar').style.width = perc + '%';
-            document.getElementById('global-perc').innerText = Math.floor(perc) + '%';
+            setArc('global-arc', (totalVal / 100000 * 100));
+            document.getElementById('global-perc').innerText = Math.floor((totalVal / 100000 * 100)) + '%';
+            setArc('arc-g', (sG / 50000 * 100));
+            setArc('arc-f', (sF / 50000 * 100));
 
             const container = document.getElementById('grid-container');
+            let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i);
-                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; border-radius:8px; font-size:0.6rem; display:flex; align-items:center; justify-content:center; color:${active ? '#fff' : '#aaa'}; font-weight:800; border:1px solid #eee;">${v}</div>`;
+                if(active) totalP += v;
+                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'};">${v}</div>`;
             }).join('');
+            
+            document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('pandora-progress').style.width = (totalP / 5000 * 100) + '%';
             
             document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
                 <div class="log-row">
