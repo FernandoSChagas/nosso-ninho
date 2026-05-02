@@ -138,7 +138,6 @@
 <body>
 
     <div class="iphone-frame">
-        <!-- LOGIN -->
         <div id="login-screen">
             <h2 style="margin-bottom: 20px;">Nosso Ninho 🏠</h2>
             <input type="email" id="login-email" class="login-input" placeholder="E-mail">
@@ -241,6 +240,7 @@
             if (!auth.currentUser) return;
             
             auth.currentUser.getIdToken().then(token => {
+                // Adicionamos o token de autenticação na URL para evitar o "Permission Denied"
                 fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { cache: 'no-store' }) 
                     .then(res => res.json())
                     .then(data => {
@@ -263,7 +263,6 @@
             btn.disabled = true;
             btn.innerText = "Gravando...";
 
-            // Criar cópia para evitar erro de referência
             let novosDados = JSON.parse(JSON.stringify(dadosApp));
             if(!novosDados.saldoG) novosDados.saldoG = 0;
             if(!novosDados.saldoF) novosDados.saldoF = 0;
@@ -293,7 +292,7 @@
                         hideModal(); 
                         input.value = '';
                     } else {
-                        alert("Erro de permissão. Verifique o login.");
+                        alert("Erro de permissão. Tente sair e entrar novamente no app.");
                     }
                     btn.disabled = false;
                     btn.innerText = "Confirmar";
