@@ -10,24 +10,34 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
+    <!-- Configuração de Fontes: Inter (Minimalista e Intelectual) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
         :root {
             --ninho-gold: #fbb000;
             --ninho-bg: #f9f9f7;
-            --text-main: #2d2d2d;
-            --text-muted: #8e8e93;
+            --text-main: #1a1a1a;
+            --text-muted: #6e6e73;
             --success-green: #34c759;
             --danger-red: #ff3b30;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        /* Aplicação da Fonte Inter em todo o app */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            letter-spacing: -0.01em;
+        }
+
+        body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: var(--text-main); }
 
         #splash-screen { position: absolute; inset: 0; z-index: 9000; background: var(--ninho-bg); display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
         #login-screen { position: absolute; inset: 0; z-index: 5000; background: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
@@ -41,135 +51,138 @@
         .tab-content.active { display: flex; }
 
         .welcome-section { padding: 10px 20px 10px; text-align: center; }
+        .welcome-section h2 { font-weight: 700; font-size: 1.8rem; }
         .welcome-section b { color: var(--ninho-gold); text-transform: capitalize; }
+        .welcome-section p { color: var(--text-muted); font-weight: 500; }
 
-        .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
+        .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); text-align: center; border: 1px solid rgba(0,0,0,0.02); }
         .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
         
         .gauge-svg { width: 100%; height: 100%; overflow: visible; }
-        .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1.2s ease-out; }
+        .gauge-bg { fill: none; stroke: #f2f2f7; stroke-width: 10; stroke-linecap: round; }
+        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
-        .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .user-mini-card img { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; border: 2px solid #f8f8f8; }
-        .meta-tag { font-size: 0.55rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+        .users-row { display: flex; gap: 12px; padding: 0 20px 15px; }
+        .user-mini-card { flex: 1; background: white; padding: 18px; border-radius: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.02); }
+        .user-mini-card img { width: 48px; height: 48px; border-radius: 50%; margin-bottom: 8px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .user-mini-card b { font-weight: 600; display: block; font-size: 0.9rem; }
+        
+        .meta-tag { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
 
         .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
-        .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+        .btn-action { flex: 1; padding: 18px; border-radius: 20px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.1s; }
+        .btn-action:active { transform: scale(0.96); }
 
-        .log-container { padding: 0 20px; text-align: center; }
-        .log-row { padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .log-container { padding: 0 20px; }
+        .log-row { padding: 14px; margin-bottom: 8px; background: white; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.01); }
+        .log-val { font-weight: 700; font-size: 1rem; margin: 4px 0; }
 
-        .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
-        .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
+        .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 90px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; }
+        .tab-btn { text-align: center; color: #a1a1a6; font-size: 0.65rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .tab-btn i { font-style: normal; font-size: 1.4rem; }
         .tab-btn.active { color: var(--ninho-gold); }
 
-        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
+        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
+        .modal-card { background: white; width: 100%; max-width: 320px; padding: 35px; border-radius: 32px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
         .break-effect { position: fixed; inset: 0; pointer-events: none; z-index: 9999; display: none; }
-        .crack { position: absolute; background: rgba(0,0,0,0.4); transform: rotate(var(--r)); width: 2px; height: var(--h); top: var(--y); left: var(--x); animation: crackFade 0.8s forwards; }
+        .crack { position: absolute; background: rgba(0,0,0,0.3); transform: rotate(var(--r)); width: 1.5px; height: var(--h); top: var(--y); left: var(--x); animation: crackFade 0.8s forwards; }
         @keyframes crackFade { 0% { opacity: 1; } 100% { opacity: 0; height: calc(var(--h) * 1.5); } }
     </style>
 </head>
 <body>
     <div id="break-overlay" class="break-effect"></div>
-    <div id="splash-screen"><h2 style="font-weight: 800; color: var(--ninho-gold);">nosso ninho</h2></div>
+    <div id="splash-screen"><h2 style="font-weight: 800; color: var(--ninho-gold); letter-spacing: -1px;">nosso ninho</h2></div>
 
     <div id="login-screen">
-        <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
-        <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
-        <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
-        <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
+        <h1 style="margin-bottom: 30px; font-weight: 800; letter-spacing: -1px;">nosso ninho</h1>
+        <input type="email" id="login-email" style="width:100%; padding:18px; margin-bottom:12px; border-radius:18px; border:1px solid #e5e5e7; outline:none; font-size:1rem;" placeholder="E-mail">
+        <input type="password" id="login-pass" style="width:100%; padding:18px; margin-bottom:24px; border-radius:18px; border:1px solid #e5e5e7; outline:none; font-size:1rem;" placeholder="Senha">
+        <button onclick="login()" style="width:100%; padding:20px; border-radius:18px; background:var(--text-main); color:white; border:none; font-weight:700; font-size:1rem;">Entrar</button>
     </div>
 
     <div class="app-shell" id="app-shell">
         <div class="top-nav"><button class="btn-alerta" onclick="mostrarMotivacao()">🔔</button></div>
         
+        <!-- ABA: NINHO -->
         <div id="tab-ninho" class="tab-content active">
-            <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
+            <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Acelerando o <span>nosso sonho!</span></p></div>
             <div class="card-saldo">
-                <div class="meta-tag">Meta do nosso ninho: R$ 100.000</div>
+                <div class="meta-tag">Meta Total: R$ 100.000</div>
                 <div class="chart-box">
                     <svg class="gauge-svg" viewBox="0 0 100 50">
                         <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
                         <path id="global-arc" class="gauge-fill" style="stroke:var(--ninho-gold)" d="M10,45 A40,40 0 0,1 90,45" />
                     </svg>
-                    <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.2rem;">0%</div>
+                    <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.3rem;">0%</div>
                 </div>
-                <h2 id="total" style="font-size: 1.6rem; margin-top: 5px;">R$ 0,00</h2>
-                <div style="font-size: 0.7rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (115% CDI)</div>
+                <h2 id="total" style="font-size: 1.8rem; margin-top: 8px; font-weight: 800;">R$ 0,00</h2>
+                <div style="font-size: 0.75rem; color: var(--success-green); font-weight: 700; margin-top: 5px;">📈 + R$ <span id="cdi-val">0,00</span> (115% CDI)</div>
             </div>
             <div class="users-row">
                 <div class="user-mini-card">
                     <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
-                    <b>Gabriel</b><div class="meta-tag">Meta: 50K</div>
-                    <div class="chart-box" style="width:70px; height:35px;">
-                        <svg class="gauge-svg" viewBox="0 0 100 50">
-                            <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
-                            <path id="arc-g" class="gauge-fill" style="stroke:#34c759" d="M10,45 A40,40 0 0,1 90,45" />
-                        </svg>
-                    </div>
-                    <span id="val-g" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
+                    <b>Gabriel</b><div class="meta-tag">50K</div>
+                    <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" /><path id="arc-g" class="gauge-fill" style="stroke:#34c759" d="M10,45 A40,40 0 0,1 90,45" /></svg></div>
+                    <span id="val-g" style="font-size:0.75rem; font-weight:700;">R$ 0</span>
                 </div>
                 <div class="user-mini-card">
                     <img src="foto-fernando.png" onerror="this.src='https://ui-avatars.com/api/?name=Fernando&background=fbb000&color=fff'">
-                    <b>Fernando</b><div class="meta-tag">Meta: 50K</div>
-                    <div class="chart-box" style="width:70px; height:35px;">
-                        <svg class="gauge-svg" viewBox="0 0 100 50">
-                            <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
-                            <path id="arc-f" class="gauge-fill" style="stroke:#007aff" d="M10,45 A40,40 0 0,1 90,45" />
-                        </svg>
-                    </div>
-                    <span id="val-f" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
+                    <b>Fernando</b><div class="meta-tag">50K</div>
+                    <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" /><path id="arc-f" class="gauge-fill" style="stroke:#007aff" d="M10,45 A40,40 0 0,1 90,45" /></svg></div>
+                    <span id="val-f" style="font-size:0.75rem; font-weight:700;">R$ 0</span>
                 </div>
             </div>
             <div class="actions-row">
-                <button class="btn-action" style="background:#2d2d2d; color:white;" onclick="showModal('add')">TIJOLOS 🧱</button>
+                <button class="btn-action" style="background:var(--text-main); color:white;" onclick="showModal('add')">TIJOLOS 🧱</button>
                 <button class="btn-action" style="background:white; color:var(--danger-red); border:1px solid #eee;" onclick="confirmDemolish()">DEMOLIR 🔨</button>
             </div>
             <div class="log-container" id="activity-log"></div>
         </div>
 
+        <!-- ABA: COFRE -->
         <div id="tab-pandora" class="tab-content">
-            <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
+            <div class="welcome-section"><h2>Cofre Pandora</h2><p>Reserva: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
-                <h2 id="pandora-status" style="font-size: 1.5rem;">R$ 0,00</h2>
-                <div style="height:8px; background:#f0f0f0; border-radius:10px; margin-top:10px; overflow:hidden;"><div id="pandora-progress" style="height:100%; width:0%; background:var(--success-green); transition:1s;"></div></div>
+                <h2 id="pandora-status" style="font-size: 1.8rem; font-weight: 800;">R$ 0,00</h2>
+                <div style="height:10px; background:#f2f2f7; border-radius:10px; margin-top:15px; overflow:hidden;"><div id="pandora-progress" style="height:100%; width:0%; background:var(--success-green); transition:1s ease-in-out;"></div></div>
             </div>
-            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(42px, 1fr)); gap:8px; padding:20px;"></div>
+            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(46px, 1fr)); gap:10px; padding:20px;"></div>
         </div>
 
-        <div id="tab-stats" class="tab-content">
-            <div class="welcome-section"><h2>Ninho Analytics</h2><p>Previsão e <span>Desempenho</span></p></div>
-            <div class="card-saldo" style="text-align: left; padding: 25px;">
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Ritmo médio de tijolos:</p>
-                <h3 id="ritmo-diario" style="margin-bottom: 18px; font-weight: 800;">R$ 0,00 / dia</h3>
+        <!-- ABA: DESTINO -->
+        <div id="tab-destino" class="tab-content">
+            <div class="welcome-section"><h2>Nosso Destino</h2><p>Investigação do <span>futuro</span></p></div>
+            <div class="card-saldo" style="text-align: left; padding: 30px;">
+                <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Ritmo de construção:</p>
+                <h3 id="ritmo-diario" style="margin-bottom: 20px; font-weight: 700; font-size: 1.4rem;">R$ 0,00 / dia</h3>
                 
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Dias restantes estimados:</p>
-                <h3 id="tempo-restante" style="margin-bottom: 18px; font-weight: 800;">--- dias</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Tempo estimado:</p>
+                <h3 id="tempo-restante" style="margin-bottom: 25px; font-weight: 700; font-size: 1.4rem;">--- dias</h3>
                 
-                <div style="background: var(--ninho-bg); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid #eee;">
-                    <p style="font-size: 0.7rem; font-weight: 700; color: var(--ninho-gold); text-transform: uppercase; letter-spacing: 1px;">Previsão de Conclusão</p>
-                    <h2 id="data-conclusao" style="font-size: 1.6rem; margin-top: 8px; font-weight: 800; color: var(--text-main);">-- / -- / ----</h2>
+                <div style="background: #fdfaf2; padding: 25px; border-radius: 24px; text-align: center; border: 1px solid rgba(251, 176, 0, 0.1);">
+                    <p style="font-size: 0.65rem; font-weight: 800; color: var(--ninho-gold); text-transform: uppercase; letter-spacing: 1.2px;">Previsão de Entrega</p>
+                    <h2 id="data-conclusao" style="font-size: 1.7rem; margin-top: 10px; font-weight: 800; color: var(--text-main);">-- / -- / ----</h2>
                 </div>
             </div>
         </div>
 
+        <!-- RODAPÉ ATUALIZADO -->
         <div class="footer-tabs">
-            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Ninho</div>
-            <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
-            <div class="tab-btn" id="btn-stats" onclick="switchTab('stats', this)"><i>📊</i>Analytics</div>
-            <div class="tab-btn" onclick="logout()"><i>🚪</i>Sair</div>
+            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>NINHO</div>
+            <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>COFRE</div>
+            <div class="tab-btn" id="btn-destino" onclick="switchTab('destino', this)"><i>🧭</i>DESTINO</div>
+            <div class="tab-btn" onclick="logout()"><i>🧱</i>SAIR</div>
         </div>
 
+        <!-- MODAL -->
         <div id="modal">
-            <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
-                <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0" inputmode="decimal">
-                <div style="display:flex; gap:10px;">
-                    <button style="flex:2; padding:15px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()">Confirmar</button>
-                    <button style="flex:1; padding:15px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
+            <div class="modal-card">
+                <h3 id="modal-title" style="font-weight: 800;">Operação</h3>
+                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #f2f2f7; font-size:2.4rem; text-align:center; margin:25px 0; outline:none; font-weight: 800;" placeholder="0" inputmode="decimal">
+                <div style="display:flex; gap:12px;">
+                    <button style="flex:2; padding:18px; border-radius:18px; background:var(--text-main); color:white; border:none; font-weight:700;" onclick="processar()">Confirmar</button>
+                    <button style="flex:1; padding:18px; border-radius:18px; background:#f2f2f7; border:none; font-weight:600;" onclick="hideModal()">Voltar</button>
                 </div>
             </div>
         </div>
@@ -189,7 +202,7 @@
         const auth = firebase.auth();
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
         let currentMode = 'add';
-        const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️"];
+        const frases = ["Construindo com amor! 🏠", "Cada tijolo conta! ✨", "Nosso futuro está logo ali! 🐥", "Foco no Destino! ❤️"];
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort((a,b) => b-a);
 
@@ -211,7 +224,7 @@
         });
 
         function mostrarMotivacao() { alert(frases[Math.floor(Math.random() * frases.length)]); }
-        function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p).catch(() => alert("Erro de acesso.")); }
+        function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p).catch(() => alert("Acesso negado.")); }
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
@@ -241,7 +254,7 @@
             setTimeout(() => overlay.style.display = 'none', 800);
         }
 
-        function confirmDemolish() { if(confirm("Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
+        function confirmDemolish() { if(confirm("Confirmar demolição parcial?")) { showModal('remove'); } }
 
         function processar() {
             const input = document.getElementById('input-val');
@@ -249,7 +262,7 @@
             if(isNaN(v) || v === 0) return;
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
             if(currentMode === 'remove') { v = -v; triggerBreak(); } 
-            else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] }); }
+            else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#000000'] }); }
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
             registrarAtividade(user, v, "Ninho");
             atualizarInterface(); input.value = ''; salvar();
@@ -298,13 +311,13 @@
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i); if(active) totalP += v;
-                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border-radius:8px; display:flex; align-items:center; justify-content:center;">${v}</div>`;
+                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; border: 1px solid ${active ? 'var(--ninho-gold)' : '#f2f2f7'};">${v}</div>`;
             }).join('');
             document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('pandora-progress').style.width = (totalP / 5000 * 100) + '%';
-            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,4).map(i => `<div class="log-row"><b>${i.val > 0 ? 'Colocou' : 'Demoliu'} no ${i.local} - ${i.user}</b><div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div><small>${i.date} às ${i.time}</small></div>`).join('');
+            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,4).map(i => `<div class="log-row"><b>${i.val > 0 ? 'Colocou' : 'Demoliu'} no ${i.local} - ${i.user}</b><div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div><small style="color:var(--text-muted); font-weight:500;">${i.date} às ${i.time}</small></div>`).join('');
 
-            // LOGICA ANALYTICS BLINDADA
+            // LOGICA DESTINO (CALCULO DE PROJEÇÃO)
             const historico = dadosApp.historico || [];
             if (historico.length >= 1) {
                 let inicio;
@@ -316,8 +329,7 @@
                 } catch (e) { inicio = new Date(); }
 
                 const hoje = new Date();
-                const diffTime = Math.abs(hoje - inicio);
-                const diasPassados = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+                const diasPassados = Math.max(1, Math.ceil(Math.abs(hoje - inicio) / (1000 * 60 * 60 * 24)));
                 const mediaDiaria = totalVal / diasPassados;
                 const faltaVal = 100000 - totalVal;
                 
@@ -328,8 +340,8 @@
                     document.getElementById('tempo-restante').innerText = diasParaFim + ' dias';
                     document.getElementById('data-conclusao').innerText = dataFinal.toLocaleDateString('pt-BR');
                 } else if (totalVal >= 100000) {
-                    document.getElementById('data-conclusao').innerText = "Meta Atingida! 🎉";
-                    document.getElementById('ritmo-diario').innerText = "Concluído";
+                    document.getElementById('data-conclusao').innerText = "Destino Alcançado! 🏠";
+                    document.getElementById('ritmo-diario').innerText = "Meta Concluída";
                     document.getElementById('tempo-restante').innerText = "0";
                 }
             }
