@@ -45,9 +45,11 @@
 
         .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
         .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
-        .gauge-svg { width: 100%; height: 100%; }
+        
+        /* Ajuste do SVG para ser responsivo e preciso */
+        .gauge-svg { width: 100%; height: 100%; overflow: visible; }
         .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1.2s ease-out; }
         
         .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
         .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
@@ -59,7 +61,6 @@
 
         .log-container { padding: 0 20px; text-align: center; }
         .log-row { padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .log-val { font-size: 0.85rem; font-weight: 800; margin-top: 2px; }
 
         .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
@@ -92,8 +93,8 @@
                 <div class="meta-tag">Meta do nosso ninho: R$ 100.000</div>
                 <div class="chart-box">
                     <svg class="gauge-svg" viewBox="0 0 100 50">
-                        <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
-                        <path id="global-arc" class="gauge-fill" style="stroke:var(--ninho-gold)" d="M10,45 A35,35 0 0,1 90,45" />
+                        <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
+                        <path id="global-arc" class="gauge-fill" style="stroke:var(--ninho-gold)" d="M10,45 A40,40 0 0,1 90,45" />
                     </svg>
                     <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.2rem;">0%</div>
                 </div>
@@ -104,13 +105,23 @@
                 <div class="user-mini-card">
                     <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
                     <b>Gabriel</b><div class="meta-tag">Meta: 50K</div>
-                    <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" /><path id="arc-g" class="gauge-fill" style="stroke:#34c759" d="M10,45 A35,35 0 0,1 90,45" /></svg></div>
+                    <div class="chart-box" style="width:70px; height:35px;">
+                        <svg class="gauge-svg" viewBox="0 0 100 50">
+                            <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
+                            <path id="arc-g" class="gauge-fill" style="stroke:#34c759" d="M10,45 A40,40 0 0,1 90,45" />
+                        </svg>
+                    </div>
                     <span id="val-g" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
                 </div>
                 <div class="user-mini-card">
                     <img src="foto-fernando.png" onerror="this.src='https://ui-avatars.com/api/?name=Fernando&background=fbb000&color=fff'">
                     <b>Fernando</b><div class="meta-tag">Meta: 50K</div>
-                    <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" /><path id="arc-f" class="gauge-fill" style="stroke:#007aff" d="M10,45 A35,35 0 0,1 90,45" /></svg></div>
+                    <div class="chart-box" style="width:70px; height:35px;">
+                        <svg class="gauge-svg" viewBox="0 0 100 50">
+                            <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
+                            <path id="arc-f" class="gauge-fill" style="stroke:#007aff" d="M10,45 A40,40 0 0,1 90,45" />
+                        </svg>
+                    </div>
                     <span id="val-f" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
                 </div>
             </div>
@@ -283,20 +294,21 @@
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
-            // CORREÇÃO: Meta Geral do Nosso Ninho (Base 100k)
-            const percGlobal = (totalVal / 100000) * 100;
-            document.getElementById('global-arc').style.strokeDashoffset = 251 - (251 * (Math.min(percGlobal, 100) / 100));
-            document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal, 100)) + '%';
+            // LÓGICA MATEMÁTICA CORRIGIDA (Cálculo sobre o comprimento real do arco: 126px)
+            const arcLength = 126;
 
-            // CORREÇÃO: Meta Individual Gabriel (Base 50k)
-            const percG = (sG / 50000) * 100;
-            const arcG = document.getElementById('arc-g');
-            if(arcG) arcG.style.strokeDashoffset = 251 - (251 * (Math.min(percG, 100) / 100));
+            // Meta Geral (100k)
+            const percGlobal = (totalVal / 100000);
+            document.getElementById('global-arc').style.strokeDashoffset = arcLength - (arcLength * Math.min(percGlobal, 1));
+            document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal * 100, 100)) + '%';
 
-            // CORREÇÃO: Meta Individual Fernando (Base 50k)
-            const percF = (sF / 50000) * 100;
-            const arcF = document.getElementById('arc-f');
-            if(arcF) arcF.style.strokeDashoffset = 251 - (251 * (Math.min(percF, 100) / 100));
+            // Meta Individual Gabriel (50k)
+            const percG = (sG / 50000);
+            document.getElementById('arc-g').style.strokeDashoffset = arcLength - (arcLength * Math.min(percG, 1));
+
+            // Meta Individual Fernando (50k)
+            const percF = (sF / 50000);
+            document.getElementById('arc-f').style.strokeDashoffset = arcLength - (arcLength * Math.min(percF, 1));
 
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
