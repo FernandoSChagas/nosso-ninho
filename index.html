@@ -27,7 +27,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-
         body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
         #splash-screen { position: absolute; inset: 0; z-index: 9000; background: var(--ninho-bg); display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
@@ -68,30 +67,14 @@
 
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
 
-        /* ANIMAÇÃO DE QUEBRA (DEMOLIÇÃO) */
-        .break-effect {
-            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-            background: rgba(0,0,0,0);
-            display: none;
-        }
-        .crack {
-            position: absolute; background: rgba(0,0,0,0.4);
-            transform: rotate(var(--r));
-            width: 2px; height: var(--h);
-            top: var(--y); left: var(--x);
-            box-shadow: 0 0 2px rgba(255,255,255,0.2);
-            animation: crackFade 0.8s forwards;
-        }
+        .break-effect { position: fixed; inset: 0; pointer-events: none; z-index: 9999; display: none; }
+        .crack { position: absolute; background: rgba(0,0,0,0.4); transform: rotate(var(--r)); width: 2px; height: var(--h); top: var(--y); left: var(--x); animation: crackFade 0.8s forwards; }
         @keyframes crackFade { 0% { opacity: 1; } 100% { opacity: 0; height: calc(var(--h) * 1.5); } }
     </style>
 </head>
 <body>
-
     <div id="break-overlay" class="break-effect"></div>
-
-    <div id="splash-screen">
-        <h2 style="font-weight: 800; color: var(--ninho-gold);">nosso ninho</h2>
-    </div>
+    <div id="splash-screen"><h2 style="font-weight: 800; color: var(--ninho-gold);">nosso ninho</h2></div>
 
     <div id="login-screen">
         <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
@@ -106,7 +89,7 @@
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
             <div class="card-saldo">
-                <div class="meta-tag">Meta Global: R$ 100.000</div>
+                <div class="meta-tag">Meta do nosso ninho: R$ 100.000</div>
                 <div class="chart-box">
                     <svg class="gauge-svg" viewBox="0 0 100 50">
                         <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
@@ -182,7 +165,7 @@
         const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️", "Foco na meta, o futuro nos espera! 🚀"];
 
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
-        const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
+        const pandoraValues = rawValues.sort((a,b) => b-a); // Ordenado para facilitar visualização
 
         auth.onAuthStateChanged(user => { 
             const splash = document.getElementById('splash-screen');
@@ -226,8 +209,7 @@
 
         function triggerBreak() {
             const overlay = document.getElementById('break-overlay');
-            overlay.innerHTML = '';
-            overlay.style.display = 'block';
+            overlay.innerHTML = ''; overlay.style.display = 'block';
             for(let i=0; i<15; i++){
                 const crack = document.createElement('div');
                 crack.className = 'crack';
@@ -260,22 +242,29 @@
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
             const val = pandoraValues[index];
             if(pos > -1) {
-                if(confirm("Deseja retirar este valor do cofre?")) { dadosApp.pandora.splice(pos, 1); registrarAtividade(user, -val, "Cofre"); triggerBreak(); }
+                if(confirm(`Deseja retirar R$ ${val} do cofre?`)) {
+                    dadosApp.pandora.splice(pos, 1);
+                    registrarAtividade(user, -val, "Cofre");
+                    triggerBreak();
+                    salvar();
+                }
             } else {
                 dadosApp.pandora.push(index);
                 confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
                 registrarAtividade(user, val, "Cofre");
+                salvar();
             }
-            salvar();
         }
 
         function registrarAtividade(user, val, local) {
+            if(!dadosApp.historico) dadosApp.historico = [];
             dadosApp.historico.unshift({ user, val, local, date: new Date().toLocaleDateString('pt-BR'), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
         }
 
         function salvar() {
+            atualizarInterface(); // Atualiza local imediato
             auth.currentUser.getIdToken(true).then(token => {
-                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => { atualizarInterface(); hideModal(); });
+                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => hideModal());
             });
         }
 
@@ -285,11 +274,19 @@
             document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            const perc = (totalVal / 100000 * 100);
-            document.getElementById('global-arc').style.strokeDashoffset = 251 - (251 * (Math.min(perc, 100) / 100));
-            document.getElementById('global-perc').innerText = Math.floor(Math.min(perc, 100)) + '%';
-            const arcG = document.getElementById('arc-g'); if(arcG) arcG.style.strokeDashoffset = 251 - (251 * (Math.min(sG/50000*100, 100) / 100));
-            const arcF = document.getElementById('arc-f'); if(arcF) arcF.style.strokeDashoffset = 251 - (251 * (Math.min(sF/50000*100, 100) / 100));
+            
+            // Lógica de Cap de 50k por pessoa
+            const percGlobal = (totalVal / 100000 * 100);
+            const dashGlobal = 251 - (251 * (Math.min(percGlobal, 100) / 100));
+            document.getElementById('global-arc').style.strokeDashoffset = dashGlobal;
+            document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal, 100)) + '%';
+
+            const dashG = 251 - (251 * (Math.min(sG/50000*100, 100) / 100));
+            const arcG = document.getElementById('arc-g'); if(arcG) arcG.style.strokeDashoffset = dashG;
+
+            const dashF = 251 - (251 * (Math.min(sF/50000*100, 100) / 100));
+            const arcF = document.getElementById('arc-f'); if(arcF) arcF.style.strokeDashoffset = dashF;
+
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i); if(active) totalP += v;
