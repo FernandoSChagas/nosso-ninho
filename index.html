@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Nosso Ninho - Cloud</title>
     
-    <!-- Configurações de App -->
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Nosso Ninho">
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
@@ -27,37 +25,21 @@
             --primary-blue: #a2d2ff;
             --active-green: #74c69d;
             --text-dark: #4a4a4a;
+            --danger: #ff8fa3;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-        body { 
-            background: var(--bg-gradient); 
-            height: 100dvh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden; 
-            padding: 10px;
-        }
+        body { background: var(--bg-gradient); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 10px; }
 
         .iphone-frame {
-            width: 100%; 
-            max-width: 400px; 
-            height: 96dvh;
-            background: var(--glass); 
-            backdrop-filter: blur(25px); 
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 40px; 
-            border: 2px solid var(--glass-border);
-            display: flex; 
-            flex-direction: column; 
-            padding: 20px 15px 80px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.08); 
-            position: relative;
+            width: 100%; max-width: 400px; height: 96dvh;
+            background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 40px; border: 2px solid var(--glass-border);
+            display: flex; flex-direction: column; padding: 20px 15px 80px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.08); position: relative;
         }
 
-        /* NAVEGAÇÃO RESPONSIVA */
         .tab-bar {
             position: absolute; bottom: 15px; left: 15px; right: 15px;
             height: 65px; background: rgba(255,255,255,0.85);
@@ -65,14 +47,13 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); z-index: 1000;
         }
         .tab-item { flex: 1; text-align: center; font-size: 0.75rem; color: #b2bec3; font-weight: 700; cursor: pointer; }
-        .tab-item.active { color: var(--text-dark); transform: scale(1.05); }
+        .tab-item.active { color: var(--text-dark); }
         .tab-item span { display: block; font-size: 1.2rem; }
 
         .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; scrollbar-width: none; }
         .tab-content::-webkit-scrollbar { display: none; }
         .tab-content.active { display: flex; }
 
-        /* TELA DE LOGIN */
         #login-screen {
             position: absolute; top:0; left:0; width:100%; height:100%;
             background: var(--bg-gradient); z-index: 2000; border-radius: 40px;
@@ -82,7 +63,7 @@
 
         .login-input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 20px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.6); font-size: 1rem; }
 
-        /* DASHBOARD ELEMENTS */
+        /* DASHBOARD */
         .user-card { flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 22px; padding: 10px; text-align: center; border: 1.5px solid var(--glass-border); }
         .avatar-img { width: 55px; height: 55px; border-radius: 50%; margin: 0 auto 8px; overflow: hidden; background: #fff; border: 3px solid transparent; }
         .avatar-img img { width: 100%; height: 100%; object-fit: cover; }
@@ -90,34 +71,18 @@
         .balance-display { text-align: center; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 25px; width: 100%; margin-bottom: 15px; }
         .balance-display h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; }
         
-        .btn-add { background: linear-gradient(135deg, #ffafcc, #ffc8dd); color: white; border: none; width: 100%; padding: 16px; border-radius: 20px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .actions-row { display: flex; gap: 10px; margin-top: 5px; }
+        .btn-add { background: linear-gradient(135deg, #ffafcc, #ffc8dd); color: white; border: none; width: 100%; padding: 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; cursor: pointer; flex: 1; }
+        .btn-remove { background: #fff; color: var(--danger); border: 2px solid var(--danger); padding: 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; cursor: pointer; flex: 1; }
 
-        /* PANDORA GRID RESPONSIVO */
-        .pandora-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); 
-            gap: 4px; 
-            background: rgba(255,255,255,0.3); 
-            padding: 10px; 
-            border-radius: 20px; 
-        }
-        .grid-item { 
-            aspect-ratio: 1; 
-            background: #fff; 
-            border-radius: 6px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 0.6rem; 
-            font-weight: 700; 
-            color: #888; 
-            cursor: pointer; 
-            border: 1px solid #f0f0f0; 
-        }
-        .grid-item.painted { background: var(--active-green); color: white; border-color: transparent; }
-        
-        .mini-progress { background: rgba(255,255,255,0.5); height: 10px; border-radius: 20px; margin: 10px 0; overflow: hidden; }
+        /* PROGRESS BARS */
+        .mini-progress { background: rgba(255,255,255,0.5); height: 8px; border-radius: 20px; margin: 8px 0; overflow: hidden; border: 1px solid var(--glass-border); }
         .fill { height: 100%; transition: width 1s; width: 0%; }
+
+        /* PANDORA GRID */
+        .pandora-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 4px; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 20px; }
+        .grid-item { aspect-ratio: 1; background: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: #888; cursor: pointer; border: 1px solid #f0f0f0; }
+        .grid-item.painted { background: var(--active-green); color: white; border-color: transparent; }
 
         #modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: white; padding: 25px; border-radius: 30px; z-index: 3000; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
         #modal input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 18px; border: 1px solid #eee; font-size: 1.1rem; text-align: center; outline: none; }
@@ -126,16 +91,14 @@
 <body>
 
     <div class="iphone-frame">
-        <!-- LOGIN -->
         <div id="login-screen">
             <h2 style="margin-bottom: 25px; font-family: 'Playfair Display', serif;">Nosso Ninho ☁️</h2>
             <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail">
             <input type="password" id="login-pass" class="login-input" placeholder="Sua senha">
-            <button class="btn-add" onclick="login()">Entrar</button>
+            <button class="btn-add" onclick="login()" style="width: 100%;">Entrar</button>
             <p id="login-error" style="color:red; font-size:0.7rem; margin-top:10px;"></p>
         </div>
 
-        <!-- ABA 1: NINHO -->
         <div id="tab-ninho" class="tab-content active">
             <div style="margin-bottom: 15px;">
                 <h1 id="welcome-msg" style="font-size: 1.2rem;">Bem-vindo...</h1>
@@ -144,41 +107,45 @@
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <div class="user-card">
                     <div class="avatar-img" style="border-color: var(--primary-blue)"><img src="foto-gabriel.png"></div>
+                    <div class="mini-progress"><div id="bar-g" class="fill" style="background:var(--primary-blue)"></div></div>
                     <p style="font-size: 0.7rem; font-weight: 700;">R$ <span id="val-g">0</span></p>
                 </div>
                 <div class="user-card">
                     <div class="avatar-img" style="border-color: var(--primary-pink)"><img src="foto-fernando.png"></div>
+                    <div class="mini-progress"><div id="bar-f" class="fill" style="background:var(--primary-pink)"></div></div>
                     <p style="font-size: 0.7rem; font-weight: 700;">R$ <span id="val-f">0</span></p>
                 </div>
             </div>
             <div class="balance-display">
                 <h2 id="total">R$ 0</h2>
             </div>
-            <div id="activity-log" style="flex:1; overflow-y:auto; margin-bottom:15px;"></div>
-            <button class="btn-add" onclick="showModal()">+ Adicionar Tijolinho</button>
-            <button onclick="logout()" style="margin-top:10px; background:none; border:none; color:#888; font-size:0.65rem; font-weight:700; cursor:pointer;">🚪 Sair</button>
+            <!-- Lista reduzida visualmente -->
+            <div id="activity-log" style="flex:1; overflow: hidden; margin-bottom:15px;"></div>
+            
+            <div class="actions-row">
+                <button class="btn-add" onclick="showModal('add')">Construir 🧱</button>
+                <button class="btn-remove" onclick="showModal('remove')">Demolir 🔨</button>
+            </div>
+            <button onclick="logout()" style="margin-top:10px; background:none; border:none; color:#888; font-size:0.65rem; font-weight:700; cursor:pointer; width: 100%;">🚪 Sair</button>
         </div>
 
-        <!-- ABA 2: PANDORA -->
         <div id="tab-pandora" class="tab-content">
             <div style="text-align: center; margin-bottom: 15px;">
                 <h1 style="font-family: 'Playfair Display', serif; font-size: 1.3rem;">Caixa de Pandora 🎁</h1>
                 <h2 id="pandora-status" style="font-size: 1rem; color: var(--active-green);">R$ 0 / R$ 5.000</h2>
-                <div class="mini-progress"><div id="pandora-bar" class="fill" style="background:var(--active-green)"></div></div>
+                <div class="mini-progress" style="height: 12px;"><div id="pandora-bar" class="fill" style="background:var(--active-green)"></div></div>
             </div>
             <div id="grid-container" class="pandora-grid"></div>
         </div>
 
-        <!-- BARRA DE ABAS -->
         <div class="tab-bar">
             <div class="tab-item active" onclick="switchTab('ninho', this)"><span>🏠</span>Ninho</div>
             <div class="tab-item" onclick="switchTab('pandora', this)"><span>🎁</span>Pandora</div>
         </div>
 
-        <!-- MODAL -->
         <div id="modal">
-            <h3 style="font-weight: 700;">Novo Tijolinho 🧱</h3>
-            <input type="text" id="input-val" placeholder="0.00" inputmode="text">
+            <h3 id="modal-title" style="font-weight: 700;">Novo Tijolinho 🧱</h3>
+            <input type="number" id="input-val" placeholder="0.00" inputmode="decimal">
             <div style="display:flex; gap:10px;">
                 <button onclick="processar()" id="btn-confirmar" style="flex:1.5; background:var(--primary-blue); color:white; border:none; padding:15px; border-radius:18px; font-weight:700;">Confirmar</button>
                 <button onclick="hideModal()" style="flex:1; background:#f5f5f5; border:none; padding:15px; border-radius:18px; font-weight:700; color:#888;">Voltar</button>
@@ -199,6 +166,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        let currentMode = 'add'; 
         
         const rawValues = [
             ...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20),
@@ -251,8 +219,19 @@
 
         function processar() {
             const input = document.getElementById('input-val');
-            const v = parseFloat(input.value.replace(',', '.'));
+            let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
+
+            // Se for modo remover, torna o valor negativo
+            if(currentMode === 'remove') {
+                const saldoAtual = currentUser === 'Gabriel' ? (dadosApp.saldoG || 0) : (dadosApp.saldoF || 0);
+                if(v > saldoAtual) {
+                    alert("Você não pode remover mais do que construiu! Não demola a casa 🏠");
+                    return;
+                }
+                v = -v;
+            }
+
             const btn = document.getElementById('btn-confirmar');
             btn.disabled = true;
 
@@ -281,6 +260,10 @@
             document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
             document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
             
+            // Barras de progresso individuais (Meta 50k)
+            document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
+            document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
+
             const container = document.getElementById('grid-container');
             let totalPandora = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
@@ -292,7 +275,8 @@
             document.getElementById('pandora-bar').style.width = (totalPandora / 5000 * 100) + '%';
             document.getElementById('pandora-status').innerText = `R$ ${totalPandora.toLocaleString('pt-BR')} / R$ 5.000`;
             
-            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,15).map(i => `
+            // Atividades limitadas às 5 últimas
+            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
                 <div style="font-size: 0.65rem; padding: 6px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
                     <span><strong>${i.user}</strong> ${i.val > 0 ? 'adicionou' : 'removeu'} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</span>
                     <span style="opacity:0.4">${i.date}</span>
@@ -300,7 +284,20 @@
             `).join('');
         }
 
-        function showModal() { document.getElementById('modal').style.display = 'block'; document.getElementById('input-val').focus(); }
+        function showModal(mode) { 
+            currentMode = mode;
+            const title = document.getElementById('modal-title');
+            if(mode === 'remove') {
+                title.innerText = "Demolir Tijolinho 🔨";
+                title.style.color = "var(--danger)";
+            } else {
+                title.innerText = "Novo Tijolinho 🧱";
+                title.style.color = "var(--text-dark)";
+            }
+            document.getElementById('modal').style.display = 'block'; 
+            document.getElementById('input-val').value = '';
+            document.getElementById('input-val').focus();
+        }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
