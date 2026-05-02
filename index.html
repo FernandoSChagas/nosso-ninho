@@ -47,35 +47,21 @@
         .welcome-section b { color: var(--ninho-gold); text-transform: capitalize; }
         
         .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
         
-        .gauge-svg { width: 100%; height: 100%; overflow: visible; }
-        .gauge-bg { fill: none; stroke: #f2f2f7; stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        .users-row { display: flex; gap: 12px; padding: 0 20px 15px; }
-        .user-mini-card { flex: 1; background: white; padding: 18px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .user-mini-card img { width: 48px; height: 48px; border-radius: 50%; margin-bottom: 8px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
-        .meta-tag { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
-
-        .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
-        .btn-action { flex: 1; padding: 18px; border-radius: 20px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
-
-        .log-container { padding: 0 20px; }
-        .log-row { padding: 14px; margin-bottom: 8px; background: white; border-radius: 18px; display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(0,0,0,0.01); }
-
-        .footer-tabs { position: fixed; bottom: 0; width: 100%; height: auto; min-height: 85px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom, 20px); padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; }
-        .tab-btn { text-align: center; color: #a1a1a6; font-size: 0.65rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .footer-tabs { position: fixed; bottom: 0; width: 100%; height: auto; min-height: 85px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom, 20px); padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; }
+        .tab-btn { text-align: center; color: #a1a1a6; font-size: 0.65rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .tab-btn i { font-style: normal; font-size: 1.4rem; }
         .tab-btn.active { color: var(--ninho-gold); }
 
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
         .modal-card { background: white; width: 100%; max-width: 320px; padding: 35px; border-radius: 32px; text-align: center; }
+        
+        #grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 10px; padding: 20px; }
+        .tile { aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-    <div id="splash-screen"><h2>nosso ninho</h2></div>
+    <div id="splash-screen"><h2 style="font-weight: 800; color: var(--ninho-gold);">nosso ninho</h2></div>
 
     <div id="login-screen">
         <h1 style="margin-bottom: 30px; font-weight: 800;">nosso ninho</h1>
@@ -87,57 +73,36 @@
     <div class="app-shell" id="app-shell">
         <div class="top-nav"><button class="btn-alerta" onclick="alert('Foco no Destino! ❤️')">🔔</button></div>
         
-        <!-- NINHO -->
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Fernando</b> 👋</h2><p>Acelerando o nosso sonho!</p></div>
             <div class="card-saldo">
-                <div class="meta-tag">Meta Total: R$ 100.000</div>
-                <div class="chart-box">
-                    <svg class="gauge-svg" viewBox="0 0 100 50">
-                        <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
-                        <path id="global-arc" class="gauge-fill" style="stroke:var(--ninho-gold)" d="M10,45 A40,40 0 0,1 90,45" />
-                    </svg>
-                    <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.3rem;">0%</div>
-                </div>
-                <h2 id="total" style="font-size: 1.8rem; margin-top: 8px;">R$ 0,00</h2>
+                <h2 id="total" style="font-size: 2rem; font-weight: 800;">R$ 0,00</h2>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">META: R$ 100.000</p>
             </div>
-            <div class="users-row">
-                <div class="user-mini-card">
-                    <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
-                    <b>Gabriel</b><span id="val-g" style="font-size:0.75rem;">R$ 0</span>
-                </div>
-                <div class="user-mini-card">
-                    <img src="foto-fernando.png" onerror="this.src='https://ui-avatars.com/api/?name=Fernando&background=fbb000&color=fff'">
-                    <b>Fernando</b><span id="val-f" style="font-size:0.75rem;">R$ 0</span>
-                </div>
+            <div style="display:flex; gap:10px; padding:0 20px;">
+                <button onclick="showModal('add')" style="flex:1; padding:20px; border-radius:20px; background:var(--text-main); color:white; border:none; font-weight:700;">🧱 TIJOLOS</button>
+                <button onclick="showModal('remove')" style="flex:1; padding:20px; border-radius:20px; background:white; border:1px solid #eee; font-weight:700;">🔨 DEMOLIR</button>
             </div>
-            <div class="actions-row">
-                <button class="btn-action" style="background:var(--text-main); color:white;" onclick="showModal('add')">TIJOLOS 🧱</button>
-                <button class="btn-action" style="background:white; color:var(--danger-red); border:1px solid #eee;" onclick="confirmDemolish()">DEMOLIR 🔨</button>
-            </div>
-            <div class="log-container" id="activity-log"></div>
+            <div id="activity-log" style="padding: 20px;"></div>
         </div>
 
-        <!-- COFRE PANDORA COM CONVERSÃO -->
         <div id="tab-pandora" class="tab-content">
-            <div class="welcome-section"><h2>Cofre Pandora</h2><p>Reserva: <span>5.000 €</span></p></div>
+            <div class="welcome-section"><h2>Cofre Pandora</h2><p>Reserva: 5.000 €</p></div>
             <div class="card-saldo">
                 <h2 id="pandora-status" style="font-size: 1.8rem; font-weight: 800;">0 €</h2>
-                <div id="pandora-brl" style="font-size: 0.85rem; color: var(--success-green); font-weight: 700; margin-top: 4px;">Convertendo: R$ 0,00</div>
+                <div id="pandora-brl" style="font-size: 0.8rem; color: var(--success-green); font-weight: 700; margin-top: 5px;">Convertendo...</div>
                 <div style="height:10px; background:#f2f2f7; border-radius:10px; margin-top:15px; overflow:hidden;"><div id="pandora-progress" style="height:100%; width:0%; background:var(--success-green); transition:1s;"></div></div>
             </div>
-            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(46px, 1fr)); gap:10px; padding:20px;"></div>
+            <div id="grid-container"></div>
         </div>
 
-        <!-- DESTINO -->
         <div id="tab-destino" class="tab-content">
-            <div class="welcome-section"><h2>Nosso Destino</h2><p>Investigação do futuro</p></div>
-            <div class="card-saldo" style="text-align: left; padding: 30px;">
+            <div class="welcome-section"><h2>Nosso Destino</h2><p>Previsão de Entrega</p></div>
+            <div class="card-saldo" style="text-align: left;">
                 <p style="font-size: 0.8rem; color: var(--text-muted);">Ritmo de construção:</p>
-                <h3 id="ritmo-diario" style="margin-bottom: 20px;">R$ 0,00 / dia</h3>
+                <h3 id="ritmo-diario" style="margin-bottom: 20px; font-weight: 700;">R$ 0,00 / dia</h3>
                 <div style="background: #fdfaf2; padding: 25px; border-radius: 24px; text-align: center;">
-                    <p style="font-size: 0.65rem; font-weight: 800; color: var(--ninho-gold);">Previsão de Entrega</p>
-                    <h2 id="data-conclusao" style="font-size: 1.7rem; margin-top: 10px;">-- / -- / ----</h2>
+                    <h2 id="data-conclusao" style="font-size: 1.7rem; font-weight: 800;">-- / -- / ----</h2>
                 </div>
             </div>
         </div>
@@ -148,15 +113,15 @@
             <div class="tab-btn" id="btn-destino" onclick="switchTab('destino', this)"><i>🧭</i>DESTINO</div>
             <div class="tab-btn" onclick="logout()"><i>🧱</i>SAIR</div>
         </div>
+    </div>
 
-        <div id="modal">
-            <div class="modal-card">
-                <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #f2f2f7; font-size:2.4rem; text-align:center; margin:25px 0;" placeholder="0" inputmode="decimal">
-                <div style="display:flex; gap:12px;">
-                    <button style="flex:2; padding:18px; border-radius:18px; background:var(--text-main); color:white; border:none; font-weight:700;" onclick="processar()">Confirmar</button>
-                    <button style="flex:1; padding:18px; border-radius:18px; background:#f2f2f7; border:none;" onclick="hideModal()">Voltar</button>
-                </div>
+    <div id="modal">
+        <div class="modal-card">
+            <h3 id="modal-title">Operação</h3>
+            <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #f2f2f7; font-size:2.4rem; text-align:center; margin:25px 0;" placeholder="0" inputmode="decimal">
+            <div style="display:flex; gap:12px;">
+                <button style="flex:2; padding:18px; border-radius:18px; background:var(--text-main); color:white; border:none; font-weight:700;" onclick="processar()">Confirmar</button>
+                <button style="flex:1; padding:18px; border-radius:18px; background:#f2f2f7; border:none;" onclick="hideModal()">Voltar</button>
             </div>
         </div>
     </div>
@@ -174,31 +139,37 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
-        let cotacaoEuro = 5.50; // Fallback
+        let cotacaoEuro = 6.00;
 
-        // Pegar cotação do dia
         async function buscarCotacao() {
             try {
                 const res = await fetch('https://economia.awesomeapi.com.br/last/EUR-BRL');
                 const data = await res.json();
                 cotacaoEuro = parseFloat(data.EURBRL.bid);
-            } catch (e) { console.log("Erro ao buscar cotação, usando padrão."); }
+                if(dadosApp) atualizarInterface();
+            } catch (e) { console.log("Cotação padrão usada."); }
         }
-        buscarCotacao();
 
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort((a,b) => b-a);
 
-        auth.onAuthStateChanged(user => { 
-            if (user) { 
+        auth.onAuthStateChanged(user => {
+            const splash = document.getElementById('splash-screen');
+            const login = document.getElementById('login-screen');
+            const app = document.getElementById('app-shell');
+            if (user) {
                 conectarFirebase().then(() => {
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('app-shell').style.opacity = '1';
+                    login.style.display = 'none'; app.style.opacity = '1'; splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 400);
+                    buscarCotacao();
                 });
-            } else { document.getElementById('login-screen').style.display = 'flex'; }
+            } else {
+                login.style.display = 'flex'; app.style.opacity = '0'; splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 400);
+            }
         });
 
-        function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p); }
+        function login() { auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-pass').value); }
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
@@ -217,37 +188,26 @@
         }
 
         function atualizarInterface() {
-            const sG = dadosApp.saldoG || 0; const sF = dadosApp.saldoF || 0; const totalVal = sG + sF;
+            const totalVal = (dadosApp.saldoG || 0) + (dadosApp.saldoF || 0);
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR');
-            document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
-            document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             
-            const arcLength = 126;
-            document.getElementById('global-arc').style.strokeDashoffset = arcLength - (arcLength * Math.min(totalVal/100000, 1));
-            document.getElementById('global-perc').innerText = Math.floor(Math.min((totalVal/100000)*100, 100)) + '%';
-
             // Cofre Pandora
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i); if(active) totalP += v;
-                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; border:1px solid #eee;">${v}</div>`;
+                return `<div class="tile" onclick="togglePandora(${i})" style="background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border:1px solid #eee;">${v}</div>`;
             }).join('');
             document.getElementById('pandora-status').innerText = totalP.toLocaleString('pt-BR') + ' €';
-            document.getElementById('pandora-brl').innerText = 'Cotação: R$ ' + cotacaoEuro.toFixed(2) + ' | Total: R$ ' + (totalP * cotacaoEuro).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('pandora-brl').innerText = 'Total: R$ ' + (totalP * cotacaoEuro).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('pandora-progress').style.width = (totalP / 5000 * 100) + '%';
         }
 
-        function togglePandora(index) {
+        function togglePandora(i) {
             if(!dadosApp.pandora) dadosApp.pandora = [];
-            const pos = dadosApp.pandora.indexOf(index);
+            const pos = dadosApp.pandora.indexOf(i);
             if(pos > -1) dadosApp.pandora.splice(pos, 1);
-            else { dadosApp.pandora.push(index); confetti({ particleCount: 50 }); }
+            else { dadosApp.pandora.push(i); confetti({ particleCount: 50 }); }
             atualizarInterface(); salvar();
-        }
-
-        function registrarAtividade(user, val, local) {
-            if(!dadosApp.historico) dadosApp.historico = [];
-            dadosApp.historico.unshift({ user, val, local, date: new Date().toLocaleDateString('pt-BR'), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
         }
 
         function salvar() {
@@ -256,19 +216,17 @@
             });
         }
 
-        function processar() {
-            const input = document.getElementById('input-val');
-            let v = parseFloat(input.value);
-            if(isNaN(v) || v === 0) return;
-            const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
-            if(user === 'Gabriel') dadosApp.saldoG += (currentMode === 'remove' ? -v : v);
-            else dadosApp.saldoF += (currentMode === 'remove' ? -v : v);
-            registrarAtividade(user, (currentMode === 'remove' ? -v : v), "Ninho");
-            atualizarInterface(); input.value = ''; salvar(); document.getElementById('modal').style.display = 'none';
-        }
-
         function showModal(mode) { currentMode = mode; document.getElementById('modal').style.display = 'flex'; }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
+        
+        function processar() {
+            const v = parseFloat(document.getElementById('input-val').value);
+            const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
+            const valFinal = (currentMode === 'remove' ? -v : v);
+            if(user === 'Gabriel') dadosApp.saldoG += valFinal; else dadosApp.saldoF += valFinal;
+            if(valFinal > 0) confetti({ particleCount: 100 });
+            atualizarInterface(); salvar(); hideModal();
+        }
     </script>
 </body>
 </html>
