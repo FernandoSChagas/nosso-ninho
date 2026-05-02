@@ -47,7 +47,7 @@
         .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
         .gauge-svg { width: 100%; height: 100%; }
         .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
         
         .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
         .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
@@ -165,7 +165,7 @@
         const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️", "Foco na meta, o futuro nos espera! 🚀"];
 
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
-        const pandoraValues = rawValues.sort((a,b) => b-a); // Ordenado para facilitar visualização
+        const pandoraValues = rawValues.sort((a,b) => b-a);
 
         auth.onAuthStateChanged(user => { 
             const splash = document.getElementById('splash-screen');
@@ -229,10 +229,14 @@
             let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
+            
             if(currentMode === 'remove') { v = -v; triggerBreak(); } 
             else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] }); }
+            
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
+            
             registrarAtividade(user, v, "Ninho");
+            atualizarInterface(); // Atualiza local imediato
             salvar();
         }
 
@@ -246,12 +250,14 @@
                     dadosApp.pandora.splice(pos, 1);
                     registrarAtividade(user, -val, "Cofre");
                     triggerBreak();
+                    atualizarInterface();
                     salvar();
                 }
             } else {
                 dadosApp.pandora.push(index);
                 confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
                 registrarAtividade(user, val, "Cofre");
+                atualizarInterface();
                 salvar();
             }
         }
@@ -262,7 +268,6 @@
         }
 
         function salvar() {
-            atualizarInterface(); // Atualiza local imediato
             auth.currentUser.getIdToken(true).then(token => {
                 fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => hideModal());
             });
@@ -275,17 +280,21 @@
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
-            // Lógica de Cap de 50k por pessoa
+            // Meta do nosso ninho (100k)
             const percGlobal = (totalVal / 100000 * 100);
-            const dashGlobal = 251 - (251 * (Math.min(percGlobal, 100) / 100));
-            document.getElementById('global-arc').style.strokeDashoffset = dashGlobal;
+            const pathGlobal = document.getElementById('global-arc');
+            pathGlobal.style.strokeDashoffset = 251 - (251 * (Math.min(percGlobal, 100) / 100));
             document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal, 100)) + '%';
 
-            const dashG = 251 - (251 * (Math.min(sG/50000*100, 100) / 100));
-            const arcG = document.getElementById('arc-g'); if(arcG) arcG.style.strokeDashoffset = dashG;
+            // Meta Individual Gabriel (50k)
+            const percG = (sG / 50000 * 100);
+            const pathG = document.getElementById('arc-g');
+            pathG.style.strokeDashoffset = 251 - (251 * (Math.min(percG, 100) / 100));
 
-            const dashF = 251 - (251 * (Math.min(sF/50000*100, 100) / 100));
-            const arcF = document.getElementById('arc-f'); if(arcF) arcF.style.strokeDashoffset = dashF;
+            // Meta Individual Fernando (50k)
+            const percF = (sF / 50000 * 100);
+            const pathF = document.getElementById('arc-f');
+            pathF.style.strokeDashoffset = 251 - (251 * (Math.min(percF, 100) / 100));
 
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
