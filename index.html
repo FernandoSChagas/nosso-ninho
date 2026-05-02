@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Invest</title>
+    <title>Nosso Ninho - Future</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <!-- SDKs e Confetes -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
         :root {
-            --bg: #ffffff;
-            --surface: #f9f9f9;
-            --primary: #1a1a1a; /* Grafite Profundo */
-            --gold: #d4af37; /* Champanhe Gold */
-            --danger: #9e2a2b;
-            --text-main: #1a1a1a;
-            --text-muted: #8e8e93;
-            --border: #eeeeee;
+            --bg: #0b0e11;
+            --card-bg: #15191d;
+            --primary: #00e5ff; /* Ciano Neon */
+            --secondary: #7000ff; /* Roxo Elétrico */
+            --danger: #ff4d4d;
+            --success: #00ff88;
+            --text-main: #ffffff;
+            --text-muted: #808a9d;
+            --border: rgba(255, 255, 255, 0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body { background: var(--bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: var(--text-main); }
 
@@ -37,102 +40,86 @@
             display: flex; flex-direction: column;
         }
 
-        /* LOGIN PREMIUN */
+        /* LOGIN MODERNO */
         #login-screen {
             position: absolute; inset: 0; z-index: 5000;
             background: var(--bg); display: none; flex-direction: column; 
             align-items: center; justify-content: center; padding: 40px;
         }
-        .login-box { width: 100%; text-align: center; }
-        .login-box h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 40px; }
+        .login-box { width: 100%; text-align: left; }
+        .login-box h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* DASHBOARD */
-        .header { padding: 50px 25px 20px; }
-        .header p { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 5px; }
-        .header h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-style: italic; }
+        /* HEADER */
+        .header { padding: 40px 25px 20px; }
+        .header h1 { font-size: 1.5rem; font-weight: 800; }
+        .header p { font-size: 0.8rem; color: var(--text-muted); }
 
-        /* CARD DE SALDO ESTILO BANCO */
+        /* SALDO TOTAL ESTILO FINTECH */
         .balance-card {
-            margin: 0 25px; padding: 40px 25px;
-            background: var(--primary); border-radius: 30px;
-            color: #fff; position: relative; overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            margin: 0 20px; padding: 30px;
+            background: linear-gradient(135deg, #1e252b 0%, #111518 100%);
+            border-radius: 28px; border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        .balance-card::after {
-            content: ''; position: absolute; top: -50%; right: -20%;
-            width: 200px; height: 200px; background: rgba(255,255,255,0.03); border-radius: 50%;
-        }
-        .balance-card span { font-size: 0.7rem; letter-spacing: 1.5px; opacity: 0.6; }
-        .balance-card h2 { font-size: 2.5rem; margin: 10px 0; font-weight: 700; letter-spacing: -1px; }
+        .balance-card span { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .balance-card h2 { font-size: 2.2rem; margin: 8px 0; font-weight: 800; color: var(--primary); }
 
-        /* USUÁRIOS PREMIUM */
-        .users-row { display: flex; gap: 20px; padding: 30px 25px; }
-        .u-box { flex: 1; text-align: center; }
-        .avatar-wrap { 
-            width: 60px; height: 60px; border-radius: 50%; 
-            margin: 0 auto 10px; padding: 3px; border: 1px solid var(--border);
-        }
-        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .u-box:hover .avatar { filter: grayscale(0%); }
-        .u-box p { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
-        
-        .progress-line { width: 100%; height: 2px; background: #eee; position: relative; margin-top: 10px; }
-        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--gold); transition: width 1.5s ease; }
+        /* USUÁRIOS */
+        .users-row { display: flex; gap: 15px; padding: 25px 20px; }
+        .u-box { flex: 1; background: var(--card-bg); padding: 15px; border-radius: 22px; border: 1px solid var(--border); }
+        .avatar { width: 45px; height: 45px; border-radius: 14px; object-fit: cover; margin-bottom: 10px; }
+        .u-box p { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+        .u-box b { font-size: 0.9rem; color: #fff; }
 
-        /* ATIVIDADES */
+        .progress-line { width: 100%; height: 4px; background: #222; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 1s ease; }
+
+        /* LOGS */
         .log-section { flex: 1; padding: 10px 25px; overflow-y: auto; }
         .log-item {
-            padding: 15px 0; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: var(--card-bg); border-radius: 18px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
         }
-        .log-info b { font-size: 0.85rem; font-weight: 600; display: block; }
-        .log-info small { color: var(--text-muted); font-size: 0.7rem; }
-        .log-val { font-weight: 700; font-size: 0.9rem; }
 
-        /* BOTÕES FLUTUANTES */
-        .nav-actions {
-            padding: 20px 25px 100px; display: flex; gap: 15px;
+        /* ACTIONS */
+        .nav-actions { padding: 20px 20px 100px; display: flex; gap: 12px; }
+        .btn-main {
+            flex: 1; padding: 18px; border-radius: 18px; border: none;
+            font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s;
         }
-        .btn-premium {
-            flex: 1; padding: 18px; border-radius: 15px; border: none;
-            font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; cursor: pointer; transition: 0.3s;
-        }
-        .btn-dark { background: var(--primary); color: white; }
-        .btn-light { background: var(--surface); color: var(--primary); border: 1px solid var(--border); }
+        .btn-add { background: var(--primary); color: #000; }
+        .btn-sub { background: #222; color: #fff; }
 
-        /* TAB BAR MÍNIMA */
-        .tab-bar {
-            position: absolute; bottom: 0; width: 100%; height: 85px;
-            background: #fff; border-top: 1px solid var(--border);
-            display: flex; justify-content: space-around; padding-bottom: 25px; align-items: center;
-        }
-        .tab-btn { text-align: center; color: var(--text-muted); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .tab-btn.active { color: var(--gold); }
-        .tab-btn i { display: block; font-size: 1.2rem; margin-bottom: 5px; font-style: normal; }
-
-        /* CAIXA DE PANDORA - GRID LUXO */
+        /* PANDORA GRID NEON */
         .pandora-grid {
-            display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; padding: 20px 25px;
+            display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; padding: 20px;
         }
         .cell {
-            aspect-ratio: 1; border: 1px solid var(--border); border-radius: 8px;
+            aspect-ratio: 1; background: #1e252b; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.55rem; color: #ccc; transition: 0.4s;
+            font-size: 0.6rem; color: #444; font-weight: 700; transition: 0.3s;
         }
-        .cell.active { background: var(--primary); color: var(--gold); border-color: var(--primary); }
+        .cell.active { background: var(--success); color: #000; box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
+
+        /* TAB BAR */
+        .tab-bar {
+            position: absolute; bottom: 0; width: 100%; height: 85px;
+            background: rgba(11, 14, 17, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; padding-bottom: 25px; border-top: 1px solid var(--border);
+        }
+        .tab-btn { text-align: center; color: #444; font-size: 0.65rem; font-weight: 800; padding-top: 15px; }
+        .tab-btn.active { color: var(--primary); }
 
         /* MODAL */
         #modal {
             display: none; position: absolute; inset: 0; z-index: 6000;
-            background: rgba(255,255,255,0.95); align-items: center; justify-content: center; padding: 40px;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            align-items: center; justify-content: center; padding: 30px;
         }
-        .modal-body { width: 100%; text-align: center; }
-        .modal-body h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 30px; }
-        .input-premium {
-            width: 100%; border: none; border-bottom: 2px solid var(--primary);
-            padding: 15px; font-size: 2rem; text-align: center; margin-bottom: 40px;
-            background: transparent; outline: none; font-weight: 300;
+        .modal-body { background: var(--card-bg); width: 100%; padding: 30px; border-radius: 30px; border: 1px solid var(--border); text-align: center; }
+        .input-neon {
+            width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--primary);
+            color: #fff; font-size: 2.5rem; text-align: center; margin: 30px 0; outline: none;
         }
     </style>
 </head>
@@ -143,85 +130,84 @@
         <!-- LOGIN -->
         <div id="login-screen">
             <div class="login-box">
-                <h1>Ninho<br><i>Private</i></h1>
-                <input type="email" id="login-email" class="btn-premium btn-light" style="width:100%; margin-bottom:10px; text-align:center; text-transform:none;" placeholder="E-mail de acesso">
-                <input type="password" id="login-pass" class="btn-premium btn-light" style="width:100%; margin-bottom:20px; text-align:center; text-transform:none;" placeholder="Senha">
-                <button class="btn-premium btn-dark" style="width:100%" onclick="login()">Entrar no Cofre</button>
-                <p id="login-error" style="color:var(--danger); font-size:0.7rem; margin-top:20px;"></p>
+                <h1>Future<br>Nest</h1>
+                <p style="margin-bottom: 40px; font-weight: 600;">O amanhã começa com um aporte.</p>
+                <input type="email" id="login-email" class="btn-main" style="background:#1e252b; margin-bottom:12px; text-align:left; padding-left:20px; color:#fff;" placeholder="E-mail">
+                <input type="password" id="login-pass" class="btn-main" style="background:#1e252b; margin-bottom:25px; text-align:left; padding-left:20px; color:#fff;" placeholder="Senha">
+                <button class="btn-main btn-add" onclick="login()">Desbloquear Acesso</button>
+                <p id="login-error" style="color:var(--danger); font-size:0.75rem; margin-top:20px; text-align:center;"></p>
             </div>
         </div>
 
         <!-- NINHO TAB -->
         <div id="tab-ninho" class="tab-content active" style="display:flex; flex-direction:column; height:100%;">
             <div class="header">
-                <p id="welcome-msg">Autenticando...</p>
-                <h1>Resumo Patrimonial</h1>
+                <h1 id="welcome-msg">Nest Status</h1>
+                <p>Monitorando sua evolução financeira</p>
             </div>
 
             <div class="balance-card">
-                <span>VALOR TOTAL ACUMULADO</span>
+                <span>PATRIMÔNIO CONSOLIDADO</span>
                 <h2 id="total">R$ 0,00</h2>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="opacity:0.4">ESTRATÉGIA 100K</span>
-                    <span id="global-perc" style="color:var(--gold)">0%</span>
-                </div>
+                <div class="progress-line" style="height: 6px; background:#000;"><div id="global-bar" class="progress-fill" style="background:var(--primary); width: 0%;"></div></div>
             </div>
 
             <div class="users-row">
                 <div class="u-box">
-                    <div class="avatar-wrap"><img src="foto-gabriel.png" class="avatar"></div>
+                    <img src="foto-gabriel.png" class="avatar">
                     <p>Gabriel</p>
-                    <small style="color:var(--gold); font-weight:700;">R$ <span id="val-g">0</span></small>
-                    <div class="progress-line"><div id="bar-g" class="progress-fill"></div></div>
+                    <b id="val-g">0</b>
+                    <div class="progress-line"><div id="bar-g" class="progress-fill" style="background:var(--secondary)"></div></div>
                 </div>
                 <div class="u-box">
-                    <div class="avatar-wrap"><img src="foto-fernando.png" class="avatar"></div>
+                    <img src="foto-fernando.png" class="avatar">
                     <p>Fernando</p>
-                    <small style="color:var(--gold); font-weight:700;">R$ <span id="val-f">0</span></small>
-                    <div class="progress-line"><div id="bar-f" class="progress-fill"></div></div>
+                    <b id="val-f">0</b>
+                    <div class="progress-line"><div id="bar-f" class="progress-fill" style="background:var(--primary)"></div></div>
                 </div>
             </div>
 
             <div class="log-section">
-                <p style="font-size:0.6rem; letter-spacing:1px; color:var(--text-muted); margin-bottom:10px;">HISTÓRICO DE APORTES</p>
                 <div id="activity-log"></div>
             </div>
 
             <div class="nav-actions">
-                <button class="btn-premium btn-dark" onclick="showModal('add')">Aportar ＋</button>
-                <button class="btn-premium btn-light" onclick="showModal('remove')">Retirar －</button>
+                <button class="btn-main btn-add" onclick="showModal('add')">CONSTRUIR ＋</button>
+                <button class="btn-main btn-sub" onclick="showModal('remove')">DEMOLIR －</button>
             </div>
         </div>
 
         <!-- PANDORA TAB -->
         <div id="tab-pandora" class="tab-content" style="display:none; flex-direction:column; height:100%;">
             <div class="header">
-                <p>PROJETO ESPECIAL</p>
-                <h1>Caixa Pandora</h1>
+                <h1>Pandora Box</h1>
+                <p>Desbloqueando pequenos tesouros</p>
             </div>
-            <div style="margin: 0 25px 20px; background:var(--surface); padding:25px; border-radius:20px; border:1px solid var(--border);">
-                <span style="font-size:0.6rem; color:var(--text-muted);">CAPITAL CONSOLIDADO</span>
-                <h2 id="pandora-status" style="font-size:1.8rem; margin:5px 0;">R$ 0</h2>
-                <div class="progress-line" style="height:4px;"><div id="pandora-bar" class="progress-fill"></div></div>
+            <div style="margin: 0 20px 10px; background:var(--card-bg); padding:20px; border-radius:22px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-size:0.7rem; font-weight:800;">TOTAL NA CAIXA</span>
+                    <span id="pandora-status" style="color:var(--success); font-weight:800;">R$ 0</span>
+                </div>
+                <div class="progress-line" style="height:6px; background:#000;"><div id="pandora-bar" class="progress-fill" style="background:var(--success)"></div></div>
             </div>
             <div id="grid-container" class="pandora-grid"></div>
         </div>
 
         <!-- TAB BAR -->
         <div class="tab-bar">
-            <div class="tab-btn active" id="nav-ninho" onclick="switchTab('ninho', this)"><i>◆</i>Ninho</div>
-            <div class="tab-btn" id="nav-pandora" onclick="switchTab('pandora', this)"><i>◇</i>Pandora</div>
-            <div class="tab-btn" onclick="logout()"><i>×</i>Sair</div>
+            <div class="tab-btn active" id="nav-ninho" onclick="switchTab('ninho', this)">STATUS</div>
+            <div class="tab-btn" id="nav-pandora" onclick="switchTab('pandora', this)">PANDORA</div>
+            <div class="tab-btn" onclick="logout()">LOGOUT</div>
         </div>
 
         <!-- MODAL -->
         <div id="modal">
             <div class="modal-body">
-                <h3 id="modal-title">Inserir Valor</h3>
-                <input type="number" id="input-val" class="input-premium" placeholder="0">
-                <div style="display:flex; gap:15px;">
-                    <button class="btn-premium btn-dark" style="flex:2" onclick="processar()" id="btn-confirmar">Confirmar</button>
-                    <button class="btn-premium btn-light" style="flex:1" onclick="hideModal()">Voltar</button>
+                <h3 id="modal-title">Operação</h3>
+                <input type="number" id="input-val" class="input-neon" placeholder="0">
+                <div style="display:flex; gap:12px;">
+                    <button class="btn-main btn-add" style="flex:2" onclick="processar()" id="btn-confirmar">Confirmar</button>
+                    <button class="btn-main btn-sub" style="flex:1" onclick="hideModal()">Voltar</button>
                 </div>
             </div>
         </div>
@@ -255,7 +241,7 @@
             if (user) {
                 document.getElementById('login-screen').style.display = 'none';
                 currentUser = user.email.toLowerCase().includes('fernando') ? 'Fernando' : 'Gabriel';
-                document.getElementById('welcome-msg').innerText = `CONTA: ${currentUser}`;
+                document.getElementById('welcome-msg').innerText = `${currentUser.toUpperCase()}`;
                 conectarFirebase();
             } else {
                 document.getElementById('login-screen').style.display = 'flex';
@@ -266,7 +252,7 @@
             const e = document.getElementById('login-email').value;
             const p = document.getElementById('login-pass').value;
             if(!e || !p) return;
-            auth.signInWithEmailAndPassword(e, p).catch(err => alert("Acesso Negado."));
+            auth.signInWithEmailAndPassword(e, p).catch(() => document.getElementById('login-error').innerText = "Acesso Negado.");
         }
 
         function logout() { auth.signOut().then(() => location.reload()); }
@@ -296,8 +282,16 @@
 
             if(currentMode === 'remove') {
                 const saldoAtual = currentUser === 'Gabriel' ? (dadosApp.saldoG || 0) : (dadosApp.saldoF || 0);
-                if(v > saldoAtual) { alert("Saldo Insuficiente."); return; }
+                if(v > saldoAtual) { alert("Saldo Insuficiente!"); return; }
                 v = -v;
+            } else {
+                // ANIMAÇÃO DE CONFETES SÓ NO APORTE
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#00e5ff', '#7000ff', '#ffffff']
+                });
             }
 
             const btn = document.getElementById('btn-confirmar');
@@ -312,7 +306,15 @@
         function togglePandora(index) {
             if(!dadosApp.pandora) dadosApp.pandora = [];
             const pos = dadosApp.pandora.indexOf(index);
-            if(pos > -1) dadosApp.pandora.splice(pos, 1); else dadosApp.pandora.push(index);
+            if(pos > -1) dadosApp.pandora.splice(pos, 1); else {
+                dadosApp.pandora.push(index);
+                // CONFETES NA PANDORA TAMBÉM!
+                confetti({
+                    particleCount: 40,
+                    scalar: 0.7,
+                    origin: { y: 0.7 }
+                });
+            }
             salvar();
         }
 
@@ -325,10 +327,10 @@
 
         function atualizarInterface() {
             const totalVal = (dadosApp.saldoG || 0) + (dadosApp.saldoF || 0);
-            document.getElementById('val-g').innerText = (dadosApp.saldoG || 0).toLocaleString('pt-BR');
-            document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
+            document.getElementById('val-g').innerText = `R$ ${(dadosApp.saldoG || 0).toLocaleString('pt-BR')}`;
+            document.getElementById('val-f').innerText = `R$ ${(dadosApp.saldoF || 0).toLocaleString('pt-BR')}`;
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR');
-            document.getElementById('global-perc').innerText = Math.min((totalVal / 100000 * 100), 100).toFixed(1) + '%';
+            document.getElementById('global-bar').style.width = Math.min((totalVal / 100000 * 100), 100) + '%';
             
             document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
             document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
@@ -346,11 +348,11 @@
             
             document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
                 <div class="log-item">
-                    <div class="log-info">
-                        <b>${i.user.toUpperCase()}</b>
-                        <small>${i.date}</small>
+                    <div>
+                        <b style="font-size:0.8rem">${i.user.toUpperCase()}</b><br>
+                        <small style="color:var(--text-muted)">${i.date}</small>
                     </div>
-                    <div class="log-val" style="color:${i.val > 0 ? 'var(--gold)' : 'var(--danger)'}">
+                    <div style="font-weight:800; color:${i.val > 0 ? 'var(--success)' : 'var(--danger)'}">
                         ${i.val > 0 ? '＋' : '－'} ${Math.abs(i.val).toLocaleString('pt-BR')}
                     </div>
                 </div>
@@ -359,7 +361,7 @@
 
         function showModal(mode) { 
             currentMode = mode;
-            document.getElementById('modal-title').innerText = mode === 'remove' ? "Retirar Capital" : "Aporte de Capital";
+            document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO" : "CONSTRUIR TIJOLO";
             document.getElementById('modal').style.display = 'flex'; 
             document.getElementById('input-val').value = '';
             document.getElementById('input-val').focus();
