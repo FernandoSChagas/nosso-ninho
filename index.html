@@ -32,7 +32,6 @@
 
         .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; }
 
-        /* HEADER SEM MENU */
         .top-nav { padding: 45px 20px 10px; display: flex; justify-content: flex-end; align-items: center; }
 
         .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 110px; scroll-behavior: smooth; }
@@ -56,12 +55,10 @@
         .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
         .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
 
-        /* LISTA CENTRALIZADA */
         .log-container { padding: 0 20px; text-align: center; }
         .log-row { padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .log-val { font-size: 0.85rem; font-weight: 800; margin-top: 2px; }
 
-        /* RODAPÉ FIXO */
         .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .tab-btn.active { color: var(--ninho-gold); }
@@ -142,7 +139,7 @@
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0" inputmode="decimal">
+                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin-bottom:25px; outline:none;" placeholder="0" inputmode="decimal">
                 <div style="display:flex; gap:10px;">
                     <button style="flex:2; padding:15px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()">Confirmar</button>
                     <button style="flex:1; padding:15px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
@@ -168,6 +165,10 @@
 
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
+
+        // SONS INTERATIVOS
+        const sndPalmas = new Audio('https://www.myinstants.com/media/sounds/applause_8.mp3');
+        const sndTriste = new Audio('https://www.myinstants.com/media/sounds/aaaaa_5.mp3');
 
         auth.onAuthStateChanged(user => { 
             if (user) { 
@@ -212,8 +213,13 @@
             if(isNaN(v) || v === 0) return;
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
 
-            if(currentMode === 'remove') v = -v;
-            else confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] });
+            if(currentMode === 'remove') {
+                v = -v;
+                sndTriste.play(); // SOM DE TRISTEZA
+            } else {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] });
+                sndPalmas.play(); // SOM DE PALMAS
+            }
 
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
             registrarAtividade(user, v, "Ninho");
@@ -230,11 +236,13 @@
                 if(confirm("Deseja retirar este valor do cofre?")) {
                     dadosApp.pandora.splice(pos, 1);
                     registrarAtividade(user, -val, "Cofre");
+                    sndTriste.play(); // SOM DE TRISTEZA
                 }
             } else {
                 dadosApp.pandora.push(index);
                 confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
                 registrarAtividade(user, val, "Cofre");
+                sndPalmas.play(); // SOM DE PALMAS
             }
             salvar();
         }
@@ -273,7 +281,7 @@
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i);
                 if(active) totalP += v;
-                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'};">${v}</div>`;
+                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border-radius:8px; display:flex; align-items:center; justify-content:center;">${v}</div>`;
             }).join('');
             
             document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2});
@@ -290,6 +298,16 @@
 
         function showModal(mode) { currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "NOVO INVESTIMENTO 🧱"; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
+
+        // PULL-TO-REFRESH (Lógica Simples para GitHub Pages)
+        let touchStart = 0;
+        window.addEventListener('touchstart', (e) => touchStart = e.touches[0].pageY);
+        window.addEventListener('touchmove', (e) => {
+            const touchMove = e.touches[0].pageY;
+            if (window.scrollY === 0 && touchMove - touchStart > 150) {
+                location.reload();
+            }
+        });
     </script>
 </body>
 </html>
