@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Home</title>
+    <title>Nosso Ninho - Premium</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
@@ -28,11 +28,15 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
+        /* CRITICAL: Dashboard oculto por padrão para evitar o flash visual */
         body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; }
+        .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: none; flex-direction: column; position: relative; }
+
+        #login-screen { position: absolute; inset: 0; z-index: 5000; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
 
         .top-nav { padding: 45px 20px 10px; display: flex; justify-content: flex-end; align-items: center; }
+        .btn-alerta { font-size: 1.5rem; cursor: pointer; background: none; border: none; }
 
         .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 110px; scroll-behavior: smooth; }
         .tab-content.active { display: flex; }
@@ -68,15 +72,20 @@
 </head>
 <body>
 
-    <div class="app-shell">
-        <div id="login-screen" style="position: absolute; inset: 0; z-index: 5000; background: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;">
-            <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
-            <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
-            <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
-            <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
-        </div>
+    <!-- TELA DE LOGIN (Sempre visível no carregamento) -->
+    <div id="login-screen">
+        <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
+        <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
+        <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
+        <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
+    </div>
 
-        <div class="top-nav"><span>🔔</span></div>
+    <!-- SHELL DO APP (Inicia oculto) -->
+    <div class="app-shell" id="app-shell">
+        
+        <div class="top-nav">
+            <button class="btn-alerta" onclick="mostrarMotivacao()">🔔</button>
+        </div>
 
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
@@ -112,7 +121,7 @@
             </div>
 
             <div class="actions-row">
-                <button class="btn-action" style="background:#2d2d2d; color:white;" onclick="showModal('add')">INVESTIR 🧱</button>
+                <button class="btn-action" style="background:#2d2d2d; color:white;" onclick="showModal('add')">TIJOLOS 🧱</button>
                 <button class="btn-action" style="background:white; color:var(--danger-red); border:1px solid #eee;" onclick="confirmDemolish()">DEMOLIR 🔨</button>
             </div>
 
@@ -139,7 +148,7 @@
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0" inputmode="decimal">
+                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin-bottom:25px; outline:none;" placeholder="0" inputmode="decimal">
                 <div style="display:flex; gap:10px;">
                     <button style="flex:2; padding:15px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()">Confirmar</button>
                     <button style="flex:1; padding:15px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
@@ -163,10 +172,18 @@
         let currentMode = 'add';
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
 
+        const frases = [
+            "Continue que a casa tá ficando pronta! 🏠",
+            "Cada tijolo é um passo mais perto do nosso sonho! ✨",
+            "Nosso ninho está crescendo a cada dia! 🐥",
+            "Orgulho do que estamos construindo juntos! ❤️",
+            "Foco na meta, o futuro nos espera! 🚀",
+            "Mais um tijolo, menos um dia de espera! 🧱"
+        ];
+
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
 
-        // SONS ATUALIZADOS
         const sndApplause = new Audio('https://www.soundjay.com/human/applause-01.mp3');
         const sndSad = new Audio('https://www.myinstants.com/media/sounds/sad-trombone.mp3');
 
@@ -174,10 +191,20 @@
             if (user) { 
                 const name = user.email.includes('fernando') ? 'Fernando' : 'Gabriel';
                 document.getElementById('user-name').innerText = name;
+                // Libera o shell e esconde o login
                 document.getElementById('login-screen').style.display = 'none'; 
+                document.getElementById('app-shell').style.display = 'flex';
                 conectarFirebase(); 
-            } else { document.getElementById('login-screen').style.display = 'flex'; } 
+            } else { 
+                document.getElementById('login-screen').style.display = 'flex'; 
+                document.getElementById('app-shell').style.display = 'none';
+            } 
         });
+
+        function mostrarMotivacao() {
+            const frase = frases[Math.floor(Math.random() * frases.length)];
+            alert(frase);
+        }
 
         function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p).catch(() => alert("Erro de acesso.")); }
         function logout() { auth.signOut().then(() => location.reload()); }
@@ -215,10 +242,10 @@
 
             if(currentMode === 'remove') {
                 v = -v;
-                sndSad.play(); // SOM DE TRISTEZA
+                sndSad.play();
             } else {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] });
-                sndApplause.play(); // SOM DE PALMAS
+                sndApplause.play();
             }
 
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
@@ -236,13 +263,13 @@
                 if(confirm("Deseja retirar este valor do cofre?")) {
                     dadosApp.pandora.splice(pos, 1);
                     registrarAtividade(user, -val, "Cofre");
-                    sndSad.play(); // SOM DE TRISTEZA
+                    sndSad.play();
                 }
             } else {
                 dadosApp.pandora.push(index);
                 confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
                 registrarAtividade(user, val, "Cofre");
-                sndApplause.play(); // SOM DE PALMAS
+                sndApplause.play();
             }
             salvar();
         }
@@ -289,14 +316,14 @@
             
             document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,4).map(i => `
                 <div class="log-row">
-                    <b>${i.val > 0 ? 'Aporte' : 'Retirada'} no ${i.local} - ${i.user}</b>
+                    <b>${i.val > 0 ? 'Colocou' : 'Demoliu'} tijolos no ${i.local} - ${i.user}</b>
                     <div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
                     <small>${i.date} às ${i.time}</small>
                 </div>
             `).join('');
         }
 
-        function showModal(mode) { currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "NOVO INVESTIMENTO 🧱"; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
+        function showModal(mode) { currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "COLOCAR TIJOLO 🧱"; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
 
         // PULL-TO-REFRESH
