@@ -30,57 +30,72 @@
 
         body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: none; flex-direction: column; position: relative; }
+        /* TELA DE SPLASH (EVITA VAZAMENTO) */
+        #splash-screen {
+            position: absolute; inset: 0; z-index: 9000;
+            background: var(--ninho-bg); display: flex; 
+            align-items: center; justify-content: center;
+            transition: opacity 0.4s ease;
+        }
 
-        #login-screen { position: absolute; inset: 0; z-index: 5000; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+        /* LOGIN OCULTO POR PADRÃO */
+        #login-screen { 
+            position: absolute; inset: 0; z-index: 5000; 
+            background: white; display: none; flex-direction: column; 
+            align-items: center; justify-content: center; padding: 40px; text-align: center; 
+        }
+
+        /* APP SHELL COM OPACIDADE ZERO PARA NÃO VAZAR */
+        .app-shell { 
+            width: 100%; max-width: 420px; height: 100dvh; 
+            background: var(--ninho-bg); display: flex; flex-direction: column; 
+            position: relative; opacity: 0; transition: opacity 0.5s ease;
+        }
 
         .top-nav { padding: 45px 20px 10px; display: flex; justify-content: flex-end; align-items: center; }
         .btn-alerta { font-size: 1.5rem; cursor: pointer; background: none; border: none; }
-
         .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 110px; scroll-behavior: smooth; }
         .tab-content.active { display: flex; }
-
         .welcome-section { padding: 10px 20px 10px; text-align: center; }
         .welcome-section b { color: var(--ninho-gold); text-transform: capitalize; }
-
         .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
-        
         .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
         .gauge-svg { width: 100%; height: 100%; }
         .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
         .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        
         .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
         .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
         .user-mini-card img { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; border: 2px solid #f8f8f8; }
         .meta-tag { font-size: 0.55rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
-
         .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
         .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
-
         .log-container { padding: 0 20px; text-align: center; }
         .log-row { padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .log-val { font-size: 0.85rem; font-weight: 800; margin-top: 2px; }
-
         .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .tab-btn.active { color: var(--ninho-gold); }
-
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
     </style>
 </head>
 <body>
 
+    <!-- TELA DE CARREGAMENTO (ESTRATÉGIA ANTI-VAZAMENTO) -->
+    <div id="splash-screen">
+        <h2 style="font-weight: 800; color: var(--ninho-gold); letter-spacing: -1px;">nosso ninho</h2>
+    </div>
+
+    <!-- TELA DE LOGIN -->
     <div id="login-screen">
-        <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
-        <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
-        <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
+        <h1 style="margin-bottom: 20px; font-weight: 800; letter-spacing: -1px;">nosso ninho</h1>
+        <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd; outline:none;" placeholder="E-mail">
+        <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd; outline:none;" placeholder="Senha">
         <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
     </div>
 
+    <!-- SHELL DO APP -->
     <div class="app-shell" id="app-shell">
         <div class="top-nav"><button class="btn-alerta" onclick="mostrarMotivacao()">🔔</button></div>
-
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
             <div class="card-saldo">
@@ -95,7 +110,6 @@
                 <h2 id="total" style="font-size: 1.6rem; margin-top: 5px;">R$ 0,00</h2>
                 <div style="font-size: 0.7rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (115% CDI)</div>
             </div>
-
             <div class="users-row">
                 <div class="user-mini-card">
                     <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
@@ -110,14 +124,12 @@
                     <span id="val-f" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
                 </div>
             </div>
-
             <div class="actions-row">
                 <button class="btn-action" style="background:#2d2d2d; color:white;" onclick="showModal('add')">TIJOLOS 🧱</button>
                 <button class="btn-action" style="background:white; color:var(--danger-red); border:1px solid #eee;" onclick="confirmDemolish()">DEMOLIR 🔨</button>
             </div>
             <div class="log-container" id="activity-log"></div>
         </div>
-
         <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
@@ -126,13 +138,11 @@
             </div>
             <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(42px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
-
         <div class="footer-tabs">
             <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Início</div>
             <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
             <div class="tab-btn" onclick="logout()"><i>🚪</i>Sair</div>
         </div>
-
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
@@ -159,20 +169,32 @@
         const auth = firebase.auth();
         let currentMode = 'add';
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
-        const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️", "Foco na meta, o futuro nos espera! 🚀", "Mais um tijolo, menos um dia de espera! 🧱"];
+        const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️", "Foco na meta, o futuro nos espera! 🚀"];
+
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
 
+        // LÓGICA DE INICIALIZAÇÃO BLINDADA
         auth.onAuthStateChanged(user => { 
+            const splash = document.getElementById('splash-screen');
+            const login = document.getElementById('login-screen');
+            const app = document.getElementById('app-shell');
+
             if (user) { 
                 const name = user.email.includes('fernando') ? 'Fernando' : 'Gabriel';
                 document.getElementById('user-name').innerText = name;
-                document.getElementById('login-screen').style.display = 'none'; 
-                document.getElementById('app-shell').style.display = 'flex';
-                conectarFirebase(); 
+                
+                conectarFirebase().then(() => {
+                    login.style.display = 'none';
+                    app.style.opacity = '1';
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 400);
+                });
             } else { 
-                document.getElementById('login-screen').style.display = 'flex'; 
-                document.getElementById('app-shell').style.display = 'none';
+                login.style.display = 'flex'; 
+                app.style.opacity = '0';
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 400);
             } 
         });
 
@@ -187,11 +209,13 @@
             if(el) el.classList.add('active');
         }
 
-        function conectarFirebase() {
-            auth.currentUser.getIdToken().then(token => {
-                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`).then(res => res.json()).then(data => { if(data) { dadosApp = data; atualizarInterface(); } });
-            });
-            setTimeout(conectarFirebase, 4000);
+        async function conectarFirebase() {
+            const token = await auth.currentUser.getIdToken();
+            const res = await fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`);
+            const data = await res.json();
+            if(data) { dadosApp = data; atualizarInterface(); }
+            // Inicia loop de sync silencioso
+            setTimeout(conectarFirebase, 6000);
         }
 
         function setArc(id, percent) {
@@ -199,10 +223,7 @@
             if(path) { path.style.strokeDashoffset = 251 - (251 * (Math.min(percent, 100) / 100)); }
         }
 
-        function animacaoDemolir() {
-            // Efeito de estilhaços cinzas caindo (desconstrução)
-            confetti({ particleCount: 80, spread: 50, origin: { y: 0.6 }, colors: ['#444444', '#888888', '#cccccc'], shapes: ['square'], gravity: 2, drift: 0 });
-        }
+        function animacaoDemolir() { confetti({ particleCount: 80, spread: 50, origin: { y: 0.6 }, colors: ['#444', '#888', '#ccc'], gravity: 2 }); }
 
         function confirmDemolish() { if(confirm("Atenção! Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
 
