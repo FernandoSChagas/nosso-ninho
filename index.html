@@ -238,7 +238,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyA2tR0r6uqStnb4YhEMoZ8p_Y6J5WzgEPk",
             authDomain: "nosso-ninho-c2ddf.firebaseapp.com",
-            databaseURL: "https://nosso-ninho-c2ddf-default-rtdb.firebaseio.com/",
+            databaseURL: "https://nosso-ninho-c2ddf-default-rtdb.firebaseio.com/", // Barra final corrigida
             projectId: "nosso-ninho-c2ddf",
             storageBucket: "nosso-ninho-c2ddf.firebasestorage.app",
             messagingSenderId: "942734057338",
@@ -257,7 +257,6 @@
             if (user) {
                 document.getElementById('login-screen').style.display = 'none';
                 const email = user.email.toLowerCase();
-                // Identifica quem logou pelo e-mail cadastrado
                 currentUser = email.includes('fernando') ? 'Fernando' : 'Gabriel';
                 document.getElementById('welcome-msg').innerText = `Ninho do ${currentUser}`;
                 conectarFirebase();
@@ -276,17 +275,31 @@
 
         function logout() { auth.signOut(); }
 
+        // Sincronização em tempo real corrigida (cache: 'no-store')
         function conectarFirebase() {
-            fetch(DB_URL).then(res => res.json()).then(data => {
-                if(data) { dadosApp = data; atualizarInterface(); }
-            });
+            fetch(DB_URL, { cache: 'no-store' }) 
+                .then(res => res.json())
+                .then(data => {
+                    if(data) { 
+                        dadosApp = data; 
+                        atualizarInterface(); 
+                    }
+                })
+                .catch(err => console.error("Erro na sincronização:", err));
+            
             setTimeout(conectarFirebase, 3000); 
         }
 
         function processar() {
-            const v = parseFloat(document.getElementById('input-val').value);
+            const input = document.getElementById('input-val');
+            const v = parseFloat(input.value);
             if(isNaN(v)) return;
-            if(currentUser === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
+
+            if(currentUser === 'Gabriel') {
+                dadosApp.saldoG = (dadosApp.saldoG || 0) + v;
+            } else {
+                dadosApp.saldoF = (dadosApp.saldoF || 0) + v;
+            }
             
             const log = { 
                 user: currentUser, 
@@ -298,22 +311,31 @@
             dadosApp.historico.unshift(log);
             if(dadosApp.historico.length > 20) dadosApp.historico.pop();
             
-            fetch(DB_URL, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => {
-                atualizarInterface(); hideModal(); document.getElementById('input-val').value = '';
+            fetch(DB_URL, { 
+                method: 'PUT', 
+                body: JSON.stringify(dadosApp) 
+            }).then(() => {
+                atualizarInterface(); 
+                hideModal(); 
+                input.value = '';
             });
         }
 
         function atualizarInterface() {
             document.getElementById('val-g').innerText = (dadosApp.saldoG || 0).toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
+            
+            // Barras de progresso (Meta R$ 50k cada)
             document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
             document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
-            document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
+            
+            const total = (dadosApp.saldoG || 0) + (dadosApp.saldoF || 0);
+            document.getElementById('total').innerText = 'R$ ' + total.toLocaleString('pt-BR');
             
             const logDiv = document.getElementById('activity-log');
             logDiv.innerHTML = (dadosApp.historico || []).map(item => `
                 <div class="activity-item">
-                    <span><strong>${item.user}</strong> ${item.val > 0 ? 'adicionou' : 'removeu'} R$ ${Math.abs(item.val).toLocaleString('pt-BR')}</span>
+                    <span><strong>${item.user}</strong> adicionou R$ ${item.val.toLocaleString('pt-BR')}</span>
                     <span style="opacity:0.5">${item.date}</span>
                 </div>
             `).join('');
