@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Premium</title>
+    <title>Nosso Ninho</title>
     
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/png" href="logo.png">
+    <!-- Configurações para WebApp no iPhone -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="logo.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -29,142 +29,142 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: var(--text-main); }
+        
+        body, html { 
+            background: var(--ninho-bg); 
+            height: 100%; 
+            width: 100%;
+            overflow: hidden; 
+            position: fixed; /* Evita scrolls fantasmas no iOS */
+        }
 
-        #splash-screen { position: absolute; inset: 0; z-index: 9000; background: var(--ninho-bg); display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
-        #login-screen { position: absolute; inset: 0; z-index: 5000; background: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+        /* TELA DE LOGIN - PRIORIDADE MÁXIMA NO MOBILE */
+        #login-screen { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 9999; 
+            background: white; 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 30px; 
+        }
 
-        .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; opacity: 0; transition: opacity 0.5s ease; }
+        #login-screen h1 { font-weight: 800; margin-bottom: 30px; letter-spacing: -1px; }
 
-        .top-nav { padding: 45px 20px 10px; display: flex; justify-content: flex-end; align-items: center; }
-        .btn-alerta { font-size: 1.5rem; cursor: pointer; background: none; border: none; }
+        input {
+            width: 100%; 
+            padding: 18px; 
+            margin-bottom: 12px; 
+            border-radius: 16px; 
+            border: 1px solid #e5e5e7; 
+            font-size: 16px; /* Impede zoom automático no iPhone */
+            outline: none;
+            background: #f5f5f7;
+        }
 
-        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 110px; scroll-behavior: smooth; }
+        .btn-entrar {
+            width: 100%; 
+            padding: 20px; 
+            border-radius: 16px; 
+            background: var(--text-main); 
+            color: white; 
+            border: none; 
+            font-weight: 700; 
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .app-shell { 
+            width: 100%; 
+            height: 100dvh; 
+            display: flex; 
+            flex-direction: column; 
+            opacity: 0; 
+            transition: opacity 0.5s ease; 
+        }
+
+        /* CONTEÚDO E TABS */
+        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 120px; padding-top: 60px; }
         .tab-content.active { display: flex; }
 
-        .welcome-section { padding: 10px 20px 10px; text-align: center; }
-        .welcome-section h2 { font-weight: 700; font-size: 1.8rem; }
-        .welcome-section b { color: var(--ninho-gold); }
+        .card-saldo { margin: 15px 20px; padding: 25px; background: white; border-radius: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); text-align: center; }
 
-        .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
-        
-        .gauge-svg { width: 100%; height: 100%; overflow: visible; }
-        .gauge-bg { fill: none; stroke: #f2f2f7; stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 126; stroke-dashoffset: 126; transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        .users-row { display: flex; gap: 12px; padding: 0 20px 15px; }
-        .user-mini-card { flex: 1; background: white; padding: 18px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .user-mini-card img { width: 48px; height: 48px; border-radius: 50%; margin-bottom: 8px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        
-        .meta-tag { font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
+        .footer-tabs { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: 90px; 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom); 
+            border-top: 1px solid rgba(0,0,0,0.05); 
+            z-index: 1000;
+        }
 
-        .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
-        .btn-action { flex: 1; padding: 18px; border-radius: 20px; border: none; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
-
-        .log-container { padding: 0 20px; }
-        .log-row { padding: 14px; margin-bottom: 8px; background: white; border-radius: 18px; display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(0,0,0,0.01); }
-
-        .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 95px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; }
-        
-        .tab-btn { text-align: center; color: #a1a1a6; font-size: 0.6rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .tab-btn { color: #a1a1a6; font-size: 0.6rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .tab-btn.active { color: var(--ninho-gold); }
-        
-        .nav-icon { width: 26px; height: 26px; object-fit: contain; transition: opacity 0.2s; }
-        .tab-btn:not(.active) .nav-icon { opacity: 0.4; filter: grayscale(100%); }
+        .nav-icon { width: 24px; height: 24px; opacity: 0.4; }
         .tab-btn.active .nav-icon { opacity: 1; filter: none; }
 
-        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.15); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; }
-        .modal-card { background: white; width: 85%; max-width: 320px; padding: 35px; border-radius: 32px; text-align: center; }
+        #grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 8px; padding: 20px; }
+        .tile { aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-    <div id="splash-screen"><h2 style="font-weight: 800; color: var(--ninho-gold);">nosso ninho</h2></div>
 
     <div id="login-screen">
-        <h1 style="margin-bottom: 30px; font-weight: 800;">nosso ninho</h1>
-        <input type="email" id="login-email" style="width:100%; padding:18px; margin-bottom:12px; border-radius:18px; border:1px solid #e5e5e7;" placeholder="E-mail">
-        <input type="password" id="login-pass" style="width:100%; padding:18px; margin-bottom:24px; border-radius:18px; border:1px solid #e5e5e7;" placeholder="Senha">
-        <button onclick="login()" style="width:100%; padding:20px; border-radius:18px; background:var(--text-main); color:white; border:none; font-weight:700;">Entrar</button>
+        <h1>nosso ninho</h1>
+        <input type="email" id="login-email" placeholder="E-mail" autocomplete="email">
+        <input type="password" id="login-pass" placeholder="Senha">
+        <button class="btn-entrar" onclick="login()">Entrar</button>
     </div>
 
     <div class="app-shell" id="app-shell">
-        <div class="top-nav"><button class="btn-alerta" onclick="alert('Foco no Destino! ❤️')">🔔</button></div>
-        
         <!-- NINHO -->
         <div id="tab-ninho" class="tab-content active">
-            <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso lar!</p></div>
             <div class="card-saldo">
-                <div class="meta-tag">Meta Total: R$ 100.000</div>
-                <div class="chart-box">
-                    <svg class="gauge-svg" viewBox="0 0 100 50">
-                        <path class="gauge-bg" d="M10,45 A40,40 0 0,1 90,45" />
-                        <path id="global-arc" class="gauge-fill" style="stroke:var(--ninho-gold)" d="M10,45 A40,40 0 0,1 90,45" />
-                    </svg>
-                    <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.3rem;">0%</div>
-                </div>
-                <h2 id="total" style="font-size: 1.8rem; margin-top: 8px;">R$ 0,00</h2>
+                <h2 id="total" style="font-size: 2rem; font-weight: 800;">R$ 0,00</h2>
+                <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-top: 5px;">META: R$ 100.000</p>
             </div>
-            <div class="users-row">
-                <div class="user-mini-card">
-                    <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
-                    <b>Gabriel</b><div class="meta-tag">50K</div>
-                    <span id="val-g" style="font-size:0.75rem; font-weight:700;">R$ 0</span>
-                </div>
-                <div class="user-mini-card">
-                    <img src="foto-fernando.png" onerror="this.src='https://ui-avatars.com/api/?name=Fernando&background=fbb000&color=fff'">
-                    <b>Fernando</b><div class="meta-tag">50K</div>
-                    <span id="val-f" style="font-size:0.75rem; font-weight:700;">R$ 0</span>
-                </div>
+            <div style="display:flex; gap:10px; padding:0 20px;">
+                <button onclick="showModal('add')" style="flex:1; padding:20px; border-radius:20px; background:var(--text-main); color:white; border:none; font-weight:700;">🧱 TIJOLOS</button>
+                <button onclick="showModal('remove')" style="flex:1; padding:20px; border-radius:20px; background:white; border:1px solid #eee; font-weight:700;">🔨 DEMOLIR</button>
             </div>
-            <div class="actions-row">
-                <button class="btn-action" style="background:var(--text-main); color:white;" onclick="showModal('add')">TIJOLOS 🧱</button>
-                <button class="btn-action" style="background:white; color:var(--danger-red); border:1px solid #eee;" onclick="showModal('remove')">DEMOLIR 🔨</button>
-            </div>
-            <div class="log-container" id="activity-log"></div>
+            <div id="activity-log" style="padding: 20px;"></div>
         </div>
 
         <!-- COFRE -->
         <div id="tab-pandora" class="tab-content">
-            <div class="welcome-section"><h2>Cofre Pandora</h2><p>Reserva: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
-                <h2 id="pandora-status" style="font-size: 1.8rem; font-weight: 800;">R$ 0,00</h2>
-                <div style="height:10px; background:#f2f2f7; border-radius:10px; margin-top:15px; overflow:hidden;"><div id="pandora-progress" style="height:100%; width:0%; background:var(--success-green); transition:1s;"></div></div>
+                <h2 id="pandora-status" style="font-size: 2rem; font-weight: 800;">R$ 0,00</h2>
+                <p style="font-size: 0.7rem; font-weight: 700; color: var(--success-green);">COFRE PANDORA</p>
             </div>
-            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(46px, 1fr)); gap:10px; padding:20px;"></div>
+            <div id="grid-container"></div>
         </div>
 
         <!-- DESTINO -->
         <div id="tab-destino" class="tab-content">
-            <div class="welcome-section"><h2>Nosso Destino</h2><p>Previsão de <span>conclusão</span></p></div>
             <div class="card-saldo" style="text-align: left;">
                 <p style="font-size: 0.8rem; color: var(--text-muted);">Ritmo de construção:</p>
                 <h3 id="ritmo-diario" style="margin-bottom: 20px; font-weight: 700;">R$ 0,00 / dia</h3>
                 <div style="background: #fdfaf2; padding: 25px; border-radius: 24px; text-align: center;">
-                    <p style="font-size: 0.65rem; font-weight: 800; color: var(--ninho-gold); text-transform: uppercase;">Previsão de Entrega</p>
+                    <p style="font-size: 0.65rem; font-weight: 800; color: var(--ninho-gold);">PREVISÃO DE ENTREGA</p>
                     <h2 id="data-conclusao" style="font-size: 1.7rem; margin-top: 10px; font-weight: 800;">-- / -- / ----</h2>
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="footer-tabs">
-            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><img src="ninho.svg" class="nav-icon"><span>NINHO</span></div>
-            <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><img src="cofre.svg" class="nav-icon"><span>COFRE</span></div>
-            <div class="tab-btn" id="btn-destino" onclick="switchTab('destino', this)"><img src="destino.svg" class="nav-icon"><span>DESTINO</span></div>
-            <div class="tab-btn" onclick="logout()"><img src="sair.svg" class="nav-icon"><span>SAIR</span></div>
-        </div>
-
-        <!-- MODAL -->
-        <div id="modal">
-            <div class="modal-card">
-                <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #f2f2f7; font-size:2.4rem; text-align:center; margin:25px 0;" placeholder="0" inputmode="decimal">
-                <div style="display:flex; gap:12px;">
-                    <button style="flex:2; padding:18px; border-radius:18px; background:var(--text-main); color:white; border:none; font-weight:700;" onclick="processar()">Confirmar</button>
-                    <button style="flex:1; padding:18px; border-radius:18px; background:#f2f2f7; border:none;" onclick="hideModal()">Voltar</button>
-                </div>
-            </div>
+            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><img src="ninho.svg" class="nav-icon">NINHO</div>
+            <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><img src="cofre.svg" class="nav-icon">COFRE</div>
+            <div class="tab-btn" id="btn-destino" onclick="switchTab('destino', this)"><img src="destino.svg" class="nav-icon">DESTINO</div>
+            <div class="tab-btn" onclick="logout()"><img src="sair.svg" class="nav-icon">SAIR</div>
         </div>
     </div>
 
@@ -181,142 +181,91 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
-        let currentMode = 'add';
-
-        // Tabela do Cofre Pandora
+        
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort((a,b) => b-a);
 
-        auth.onAuthStateChanged(user => { 
-            const splash = document.getElementById('splash-screen');
+        auth.onAuthStateChanged(user => {
             const login = document.getElementById('login-screen');
             const app = document.getElementById('app-shell');
-            if (user) { 
-                document.getElementById('user-name').innerText = user.email.includes('fernando') ? 'Fernando' : 'Gabriel';
+            if (user) {
                 conectarFirebase().then(() => {
-                    login.style.display = 'none'; app.style.opacity = '1'; splash.style.opacity = '0';
-                    setTimeout(() => splash.style.display = 'none', 400);
+                    login.style.display = 'none';
+                    app.style.opacity = '1';
                 });
-            } else { 
-                login.style.display = 'flex'; app.style.opacity = '0'; splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 400);
-            } 
+            } else {
+                login.style.display = 'flex';
+                app.style.opacity = '0';
+            }
         });
 
-        function login() { 
-            const e = document.getElementById('login-email').value; 
-            const p = document.getElementById('login-pass').value; 
-            auth.signInWithEmailAndPassword(e, p).catch(() => alert("Acesso negado. Verifique os dados.")); 
+        function login() {
+            const e = document.getElementById('login-email').value;
+            const p = document.getElementById('login-pass').value;
+            auth.signInWithEmailAndPassword(e, p).catch(err => alert("Erro: " + err.message));
         }
 
         function logout() { auth.signOut().then(() => location.reload()); }
+
+        async function conectarFirebase() {
+            const token = await auth.currentUser.getIdToken();
+            const res = await fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`);
+            const data = await res.json();
+            if(data) { dadosApp = data; atualizarInterface(); }
+            setTimeout(conectarFirebase, 10000);
+        }
 
         function switchTab(tab, el) {
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(i => i.classList.remove('active'));
             document.getElementById('tab-' + tab).style.display = 'flex';
-            if(el) el.classList.add('active');
+            el.classList.add('active');
         }
 
-        async function conectarFirebase() {
-            try {
-                const token = await auth.currentUser.getIdToken();
-                const res = await fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`);
-                const data = await res.json();
-                if(data) { dadosApp = data; atualizarInterface(); }
-                setTimeout(conectarFirebase, 6000);
-            } catch (e) { console.error("Erro Firebase", e); }
-        }
+        function atualizarInterface() {
+            const totalVal = (dadosApp.saldoG || 0) + (dadosApp.saldoF || 0);
+            document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR');
 
-        function processar() {
-            const input = document.getElementById('input-val');
-            let v = parseFloat(input.value);
-            if(isNaN(v) || v === 0) return;
-            const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
-            if(currentMode === 'remove') { v = -v; } 
-            else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#000000'] }); }
-            if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
-            registrarAtividade(user, v, "Ninho");
-            atualizarInterface(); input.value = ''; salvar();
-        }
+            // Render Cofre
+            const container = document.getElementById('grid-container');
+            let totalP = 0;
+            container.innerHTML = pandoraValues.map((v, i) => {
+                const active = (dadosApp.pandora || []).includes(i);
+                if(active) totalP += v;
+                return `<div class="tile" onclick="togglePandora(${i})" style="background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border:1px solid #eee;">${v}</div>`;
+            }).join('');
+            document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR');
 
-        function togglePandora(index) {
-            if(!dadosApp.pandora) dadosApp.pandora = [];
-            const pos = dadosApp.pandora.indexOf(index);
-            const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
-            const val = pandoraValues[index];
-            if(pos > -1) {
-                if(confirm(`Retirar R$ ${val}?`)) {
-                    dadosApp.pandora.splice(pos, 1); registrarAtividade(user, -val, "Cofre");
-                    atualizarInterface(); salvar();
+            // Destino Logic
+            const historico = dadosApp.historico || [];
+            if (historico.length >= 1) {
+                const partes = historico[historico.length - 1].date.split('/');
+                const inicio = new Date(`${partes[2]}-${partes[1]}-${partes[0]}`);
+                const dias = Math.max(1, Math.ceil(Math.abs(new Date() - inicio) / (1000 * 60 * 60 * 24)));
+                const media = totalVal / dias;
+                const falta = 100000 - totalVal;
+                if(media > 0) {
+                    const diasParaFim = Math.ceil(falta / media);
+                    const dataF = new Date(); dataF.setDate(dataF.getDate() + diasParaFim);
+                    document.getElementById('ritmo-diario').innerText = 'R$ ' + media.toLocaleString('pt-BR') + ' / dia';
+                    document.getElementById('data-conclusao').innerText = dataF.toLocaleDateString('pt-BR');
                 }
-            } else {
-                dadosApp.pandora.push(index); registrarAtividade(user, val, "Cofre");
-                confetti({ particleCount: 50 }); atualizarInterface(); salvar();
             }
         }
 
-        function registrarAtividade(user, val, local) {
-            if(!dadosApp.historico) dadosApp.historico = [];
-            dadosApp.historico.unshift({ user, val, local, date: new Date().toLocaleDateString('pt-BR'), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+        function togglePandora(i) {
+            if(!dadosApp.pandora) dadosApp.pandora = [];
+            const idx = dadosApp.pandora.indexOf(i);
+            if(idx > -1) dadosApp.pandora.splice(idx, 1);
+            else dadosApp.pandora.push(i);
+            atualizarInterface(); salvar();
         }
 
         function salvar() {
             auth.currentUser.getIdToken(true).then(token => {
-                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => hideModal());
+                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) });
             });
         }
-
-        function atualizarInterface() {
-            const sG = dadosApp.saldoG || 0; const sF = dadosApp.saldoF || 0; const totalVal = sG + sF;
-            document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
-            document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
-            
-            const arcLength = 126;
-            document.getElementById('global-arc').style.strokeDashoffset = arcLength - (arcLength * Math.min(totalVal/100000, 1));
-            document.getElementById('global-perc').innerText = Math.floor(Math.min((totalVal/100000)*100, 100)) + '%';
-
-            // Cofre Pandora
-            const container = document.getElementById('grid-container'); let totalP = 0;
-            container.innerHTML = pandoraValues.map((v, i) => {
-                const active = (dadosApp.pandora || []).includes(i); if(active) totalP += v;
-                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; border: 1px solid ${active ? 'var(--ninho-gold)' : '#f2f2f7'};">${v}</div>`;
-            }).join('');
-            document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            document.getElementById('pandora-progress').style.width = (totalP / 5000 * 100) + '%';
-            
-            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,4).map(i => `<div class="log-row"><b>${i.val > 0 ? 'Colocou' : 'Demoliu'} no ${i.local} - ${i.user}</b><div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div><small>${i.date} às ${i.time}</small></div>`).join('');
-
-            // Analytics Destino
-            const historico = dadosApp.historico || [];
-            if (historico.length >= 1) {
-                let inicio;
-                try {
-                    const partes = historico[historico.length - 1].date.split('/');
-                    inicio = new Date(`${partes[2]}-${partes[1]}-${partes[0]}`);
-                    if (isNaN(inicio.getTime())) inicio = new Date();
-                } catch (e) { inicio = new Date(); }
-                const hoje = new Date();
-                const diasPassados = Math.max(1, Math.ceil(Math.abs(hoje - inicio) / (1000 * 60 * 60 * 24)));
-                const mediaDiaria = totalVal / diasPassados;
-                const faltaVal = 100000 - totalVal;
-                if (mediaDiaria > 0 && faltaVal > 0) {
-                    const diasParaFim = Math.ceil(faltaVal / mediaDiaria);
-                    const dataFinal = new Date(); dataFinal.setDate(hoje.getDate() + diasParaFim);
-                    document.getElementById('ritmo-diario').innerText = 'R$ ' + mediaDiaria.toLocaleString('pt-BR', {maximumFractionDigits: 2}) + ' / dia';
-                    document.getElementById('data-conclusao').innerText = dataFinal.toLocaleDateString('pt-BR');
-                }
-            }
-        }
-
-        function showModal(mode) { 
-            currentMode = mode; 
-            document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "COLOCAR TIJOLO 🧱"; 
-            document.getElementById('modal').style.display = 'flex'; 
-            document.getElementById('input-val').focus(); 
-        }
-        function hideModal() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
 </html>
