@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Nosso Ninho - Cloud</title>
+    <!-- Firebase SDKs (Versão Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
@@ -25,7 +28,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
+            padding: 10px;
         }
 
         .iphone-frame {
@@ -39,10 +42,26 @@
             border: 2px solid var(--glass-border);
             display: flex;
             flex-direction: column;
-            padding: 20px 15px 15px 15px;
+            padding: 20px 15px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            position: relative;
         }
 
+        /* TELA DE LOGIN */
+        #login-screen {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: var(--bg-gradient); z-index: 500; border-radius: 35px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; text-align: center;
+        }
+
+        .login-input {
+            width: 100%; padding: 15px; margin-bottom: 10px;
+            border-radius: 15px; border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.5); font-size: 1rem;
+        }
+
+        /* DASHBOARD */
         .header { text-align: left; margin-bottom: 10px; flex-shrink: 0; }
         .header h1 { font-size: 1.2rem; color: var(--text-dark); }
         .header p { font-size: 0.75rem; opacity: 0.7; }
@@ -57,17 +76,8 @@
             border: 1px solid var(--glass-border);
         }
 
-        .avatar-img {
-            width: 35px; height: 35px; background: #fff;
-            border-radius: 50%; margin: 0 auto 5px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 0.8rem;
-        }
-
         .mini-progress { background: rgba(0,0,0,0.05); height: 5px; border-radius: 10px; margin: 5px 0; overflow: hidden; }
-        .fill { height: 100%; transition: width 1s ease-in-out; width: 0%; }
-        .fill-g { background: var(--primary-blue); }
-        .fill-f { background: var(--primary-pink); }
+        .fill { height: 100%; transition: width 1s; width: 0%; }
 
         .main-content { 
             flex: 1;
@@ -84,19 +94,10 @@
             padding: 8px;
             border-radius: 18px;
             width: 100%;
-            flex-shrink: 0;
         }
         .balance-display h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-dark); }
-        .balance-display span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; }
 
-        .house-art { 
-            height: 80px; 
-            width: auto;
-            margin: 5px 0;
-            animation: float 4s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
+        .house-art { height: 80px; margin: 5px 0; animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
         .recent-activity {
@@ -107,7 +108,6 @@
             overflow-y: auto;
             flex: 1;
             margin-bottom: 10px;
-            min-height: 80px; /* Garante que o log não suma */
         }
 
         .activity-item {
@@ -118,12 +118,6 @@
             justify-content: space-between;
         }
 
-        .actions-container {
-            width: 100%;
-            flex-shrink: 0;
-            padding-bottom: 5px;
-        }
-
         .btn-add {
             background: linear-gradient(90deg, #ff99ac, #ffafcc);
             color: white; border: none; width: 100%; padding: 16px;
@@ -132,23 +126,10 @@
             cursor: pointer;
         }
 
-        .btn-reset {
-            background: none; border: none; color: #e74c3c; 
-            font-size: 0.6rem; cursor: pointer; margin-top: 5px;
-            opacity: 0.5; width: 100%; text-align: center;
-        }
-
-        #setup-screen {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: var(--bg-gradient); z-index: 200; border-radius: 35px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; text-align: center;
-        }
-
         #modal {
             display: none; position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%); width: 85%; background: white;
-            padding: 20px; border-radius: 25px; z-index: 300; text-align: center;
+            padding: 20px; border-radius: 25px; z-index: 600; text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         #modal input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: 1px solid #eee; }
@@ -157,29 +138,29 @@
 <body>
 
     <div class="iphone-frame">
-        <div id="setup-screen">
-            <h2>Nosso Ninho</h2>
-            <p style="margin: 15px 0; font-size: 0.9rem;">Quem é você?</p>
-            <button class="btn-add" onclick="setOwner('Fernando')" style="margin-bottom: 10px;">Fernando</button>
-            <button class="btn-add" onclick="setOwner('Gabriel')" style="background: #a2d2ff;">Gabriel</button>
+        <!-- LOGIN -->
+        <div id="login-screen">
+            <h2 style="margin-bottom: 20px;">Nosso Ninho 🏠</h2>
+            <input type="email" id="login-email" class="login-input" placeholder="E-mail">
+            <input type="password" id="login-pass" class="login-input" placeholder="Senha">
+            <button class="btn-add" onclick="login()">Entrar</button>
+            <p id="login-error" style="color:red; font-size:0.7rem; margin-top:10px;"></p>
         </div>
 
         <div class="header">
-            <h1 id="welcome-msg">Nosso Ninho</h1>
-            <p>Meta: R$ 100.000 ✨</p>
+            <h1 id="welcome-msg">Carregando...</h1>
+            <p>Construindo nosso sonho juntos ✨</p>
         </div>
 
         <div class="users-row">
             <div class="user-card">
-                <div class="avatar-img" style="border: 2px solid var(--primary-blue)">G</div>
-                <h3 style="font-size: 0.7rem;">Gabriel</h3>
-                <div class="mini-progress"><div id="bar-g" class="fill fill-g"></div></div>
+                <div style="font-size:0.8rem; font-weight:bold; color:var(--primary-blue)">Gabriel</div>
+                <div class="mini-progress"><div id="bar-g" class="fill" style="background:var(--primary-blue)"></div></div>
                 <p style="font-size: 0.6rem;">R$ <span id="val-g">0</span></p>
             </div>
             <div class="user-card">
-                <div class="avatar-img" style="border: 2px solid var(--primary-pink)">F</div>
-                <h3 style="font-size: 0.7rem;">Fernando</h3>
-                <div class="mini-progress"><div id="bar-f" class="fill fill-f"></div></div>
+                <div style="font-size:0.8rem; font-weight:bold; color:var(--primary-pink)">Fernando</div>
+                <div class="mini-progress"><div id="bar-f" class="fill" style="background:var(--primary-pink)"></div></div>
                 <p style="font-size: 0.6rem;">R$ <span id="val-f">0</span></p>
             </div>
         </div>
@@ -189,15 +170,10 @@
                 <span>Total Construído</span>
                 <h2 id="total">R$ 0</h2>
             </div>
-
-            <img src="https://cdn-icons-png.flaticon.com/512/619/619153.png" class="house-art" id="house-icon">
-
+            <img src="https://cdn-icons-png.flaticon.com/512/619/619153.png" class="house-art">
             <div class="recent-activity" id="activity-log"></div>
-            
-            <div class="actions-container">
-                <button class="btn-add" onclick="showModal()">+ Adicionar Tijolinho</button>
-                <button class="btn-reset" onclick="demolirCasa()">⚠️ Demolir Casa</button>
-            </div>
+            <button class="btn-add" onclick="showModal()">+ Adicionar Tijolinho</button>
+            <button onclick="logout()" style="background:none; border:none; font-size:0.6rem; margin-top:5px; opacity:0.5;">Sair</button>
         </div>
         
         <div id="modal">
@@ -211,62 +187,72 @@
     </div>
 
     <script>
-        const DB_URL = "https://nosso-ninho-c2ddf-default-rtdb.firebaseio.com/.json"; 
-        let owner = localStorage.getItem('app_owner');
-        let dadosApp = { saldoG: 0, saldoF: 0, historico: [] };
-
-        window.onload = () => {
-            if(owner) {
-                document.getElementById('setup-screen').style.display = 'none';
-                document.getElementById('welcome-msg').innerText = `Ninho do ${owner}`;
-                conectarFirebase();
-            }
+        // CONFIGURAÇÃO REAL DO SEU FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2tR0r6uqStnb4YhEMoZ8p_Y6J5WzgEPk",
+            authDomain: "nosso-ninho-c2ddf.firebaseapp.com",
+            databaseURL: "https://nosso-ninho-c2ddf-default-rtdb.firebaseio.com/",
+            projectId: "nosso-ninho-c2ddf",
+            storageBucket: "nosso-ninho-c2ddf.firebasestorage.app",
+            messagingSenderId: "942734057338",
+            appId: "1:942734057338:web:e8c1ca635ddb7dcbe340c3"
         };
 
-        function setOwner(name) {
-            owner = name;
-            localStorage.setItem('app_owner', name);
-            document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('welcome-msg').innerText = `Ninho do ${owner}`;
-            conectarFirebase();
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const DB_URL = firebaseConfig.databaseURL + ".json";
+
+        let currentUser = null;
+        let dadosApp = { saldoG: 0, saldoF: 0, historico: [] };
+
+        // MONITORAR LOGIN
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('login-screen').style.display = 'none';
+                const email = user.email.toLowerCase();
+                // Identifica quem logou pelo e-mail cadastrado
+                currentUser = email.includes('fernando') ? 'Fernando' : 'Gabriel';
+                document.getElementById('welcome-msg').innerText = `Ninho do ${currentUser}`;
+                conectarFirebase();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+            }
+        });
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(e => {
+                document.getElementById('login-error').innerText = "Erro ao entrar. Verifique e-mail e senha.";
+            });
         }
 
+        function logout() { auth.signOut(); }
+
         function conectarFirebase() {
-            fetch(DB_URL)
-                .then(res => res.json())
-                .then(data => {
-                    if(data) {
-                        dadosApp = data;
-                        atualizarInterface();
-                    }
-                });
+            fetch(DB_URL).then(res => res.json()).then(data => {
+                if(data) { dadosApp = data; atualizarInterface(); }
+            });
             setTimeout(conectarFirebase, 3000); 
         }
 
         function processar() {
             const v = parseFloat(document.getElementById('input-val').value);
             if(isNaN(v)) return;
-
-            if(owner === 'Gabriel') dadosApp.saldoG += v;
-            else dadosApp.saldoF += v;
-
-            const log = {
-                user: owner,
-                val: v,
-                date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            if(currentUser === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
+            
+            const log = { 
+                user: currentUser, 
+                val: v, 
+                date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
             };
             
             if(!dadosApp.historico) dadosApp.historico = [];
             dadosApp.historico.unshift(log);
             if(dadosApp.historico.length > 20) dadosApp.historico.pop();
-
-            fetch(DB_URL, {
-                method: 'PUT',
-                body: JSON.stringify(dadosApp)
-            }).then(() => {
-                atualizarInterface();
-                hideModal();
-                document.getElementById('input-val').value = '';
+            
+            fetch(DB_URL, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => {
+                atualizarInterface(); hideModal(); document.getElementById('input-val').value = '';
             });
         }
 
@@ -276,7 +262,7 @@
             document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
             document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
             document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
-
+            
             const logDiv = document.getElementById('activity-log');
             logDiv.innerHTML = (dadosApp.historico || []).map(item => `
                 <div class="activity-item">
@@ -288,12 +274,6 @@
 
         function showModal() { document.getElementById('modal').style.display = 'block'; }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
-        
-        function demolirCasa() {
-            if(confirm("Deseja realmente demolir o sonho na nuvem?")) {
-                fetch(DB_URL, { method: 'DELETE' }).then(() => location.reload());
-            }
-        }
     </script>
 </body>
 </html>
