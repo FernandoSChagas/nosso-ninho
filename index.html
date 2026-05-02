@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Home</title>
+    <title>Nosso Ninho - Premium</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
@@ -32,56 +32,66 @@
 
         .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; }
 
-        #login-screen { position: absolute; inset: 0; z-index: 5000; background: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
-
+        /* HEADER */
         .top-nav { padding: 40px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 120px; }
+        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 120px; scroll-behavior: smooth; }
         .tab-content.active { display: flex; }
 
-        .welcome-section { padding: 10px 20px 10px; }
+        .welcome-section { padding: 10px 20px 10px; text-align: center; }
         .welcome-section span { color: var(--ninho-gold); font-weight: 700; }
 
+        /* DASHBOARD PRINCIPAL */
         .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
         
-        /* GAUGE CHART */
         .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
         .gauge-svg { width: 100%; height: 100%; }
         .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 2s ease; }
+        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         
+        /* CARDS INDIVIDUAIS */
         .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
-        .user-mini-card { flex: 1; background: white; padding: 12px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .user-mini-card img { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; border: 2px solid #f1f1f1; }
-        .user-mini-card b { font-size: 0.75rem; display: block; }
+        .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .user-mini-card img { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; border: 2px solid #f8f8f8; }
+        .meta-tag { font-size: 0.55rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
         .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
-        .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+        .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: transform 0.1s active; }
+        .btn-action:active { transform: scale(0.97); }
 
+        /* HISTÓRICO CENTRALIZADO */
+        .log-container { padding: 0 20px; text-align: center; }
+        .log-row { padding: 12px 0; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+        .log-row b { font-size: 0.8rem; color: var(--text-main); }
+        .log-row small { font-size: 0.65rem; color: var(--text-muted); }
+        .log-val { font-size: 0.9rem; font-weight: 800; margin-top: 4px; }
+
+        /* FOOTER */
         .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .tab-btn.active { color: var(--ninho-gold); }
 
-        .tile { border-radius: 8px; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 1px solid #eee; cursor: pointer; }
-        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 30px; }
+        /* MODAL */
+        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
     </style>
 </head>
 <body>
 
     <div class="app-shell">
-        <div id="login-screen">
-            <h1 style="margin-bottom: 20px;">🔑 Acesso Ninho</h1>
-            <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
-            <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
+        <div id="login-screen" style="position: absolute; inset: 0; z-index: 5000; background: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;">
+            <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
+            <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd; outline:none;" placeholder="E-mail">
+            <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd; outline:none;" placeholder="Senha">
             <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
         </div>
 
         <div class="top-nav"><span>≡</span><span>🔔</span></div>
 
         <div id="tab-ninho" class="tab-content active">
-            <div class="welcome-section"><h2 id="welcome-msg">Olá! 👋</h2><p>Vamos construir seu <span>novo lar!</span></p></div>
+            <div class="welcome-section"><h2 id="welcome-msg">Bem-vindo 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
 
             <div class="card-saldo">
+                <div class="meta-tag">Meta Global: R$ 100.000</div>
                 <div class="chart-box">
                     <svg class="gauge-svg" viewBox="0 0 100 50">
                         <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
@@ -90,19 +100,21 @@
                     <div id="global-perc" style="position:absolute; bottom:0; font-weight:800; font-size:1.2rem;">0%</div>
                 </div>
                 <h2 id="total" style="font-size: 1.6rem; margin-top: 5px;">R$ 0,00</h2>
-                <div style="font-size: 0.7rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (CDI 115%)</div>
+                <div style="font-size: 0.7rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (115% CDI)</div>
             </div>
 
             <div class="users-row">
                 <div class="user-mini-card">
                     <img src="foto-gabriel.png" onerror="this.src='https://ui-avatars.com/api/?name=Gabriel&background=fbb000&color=fff'">
                     <b>Gabriel</b>
+                    <div class="meta-tag">Meta: 50K</div>
                     <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" /><path id="arc-g" class="gauge-fill" style="stroke:#34c759" d="M10,45 A35,35 0 0,1 90,45" /></svg></div>
                     <span id="val-g" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
                 </div>
                 <div class="user-mini-card">
                     <img src="foto-fernando.png" onerror="this.src='https://ui-avatars.com/api/?name=Fernando&background=fbb000&color=fff'">
                     <b>Fernando</b>
+                    <div class="meta-tag">Meta: 50K</div>
                     <div class="chart-box" style="width:70px; height:35px;"><svg class="gauge-svg" viewBox="0 0 100 50"><path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" /><path id="arc-f" class="gauge-fill" style="stroke:#007aff" d="M10,45 A35,35 0 0,1 90,45" /></svg></div>
                     <span id="val-f" style="font-size:0.7rem; font-weight:800;">R$ 0</span>
                 </div>
@@ -116,6 +128,7 @@
             <div class="log-container" id="activity-log"></div>
         </div>
 
+        <!-- ABA PANDORA (Otimizada) -->
         <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
@@ -124,7 +137,7 @@
                     <div id="pandora-progress" style="height:100%; width:0%; background:var(--success-green); transition:1s;"></div>
                 </div>
             </div>
-            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(40px, 1fr)); gap:8px; padding:20px;"></div>
+            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(42px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
 
         <div class="footer-tabs">
@@ -135,8 +148,8 @@
 
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
-                <h3 id="modal-title">Operação</h3>
-                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0">
+                <h3 id="modal-title" style="margin-bottom: 20px;">Operação</h3>
+                <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin-bottom:25px; outline:none;" placeholder="0" inputmode="decimal">
                 <div style="display:flex; gap:10px;">
                     <button style="flex:2; padding:15px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()">Confirmar</button>
                     <button style="flex:1; padding:15px; border-radius:15px; background:#eee; border:none;" onclick="hideModal()">Voltar</button>
@@ -165,7 +178,7 @@
 
         auth.onAuthStateChanged(user => { if (user) { document.getElementById('login-screen').style.display = 'none'; conectarFirebase(); } else { document.getElementById('login-screen').style.display = 'flex'; } });
 
-        function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p).catch(() => alert("Erro de acesso.")); }
+        function login() { const e = document.getElementById('login-email').value; const p = document.getElementById('login-pass').value; auth.signInWithEmailAndPassword(e, p).catch(() => alert("Acesso negado.")); }
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
@@ -180,7 +193,7 @@
                 fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`)
                 .then(res => res.json()).then(data => { if(data) { dadosApp = data; atualizarInterface(); } });
             });
-            setTimeout(conectarFirebase, 5000);
+            setTimeout(conectarFirebase, 3000); // Mais rápido
         }
 
         function setArc(id, percent) {
@@ -191,7 +204,7 @@
             }
         }
 
-        function confirmDemolish() { if(confirm("Atenção! Você está prestes a demolir uma parte da casa. Deseja continuar?")) { showModal('remove'); } }
+        function confirmDemolish() { if(confirm("Atenção! Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
 
         function processar() {
             const input = document.getElementById('input-val');
@@ -244,16 +257,17 @@
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i);
                 if(active) totalP += v;
-                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'};">${v}</div>`;
+                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; color:${active ? '#fff' : '#aaa'}; border-radius:8px; display:flex; align-items:center; justify-content:center;">${v}</div>`;
             }).join('');
             
             document.getElementById('pandora-status').innerText = 'R$ ' + totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('pandora-progress').style.width = (totalP / 5000 * 100) + '%';
             
-            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
+            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,6).map(i => `
                 <div class="log-row">
-                    <div><b>${i.val > 0 ? 'Investimento' : 'Retirada'} - ${i.user}</b><br><small>${i.date}, ${i.time}</small></div>
-                    <div style="font-weight:800; color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
+                    <b>${i.val > 0 ? 'Investimento' : 'Retirada'} - ${i.user}</b>
+                    <div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
+                    <small>${i.date} às ${i.time}</small>
                 </div>
             `).join('');
         }
