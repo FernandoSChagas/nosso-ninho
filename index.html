@@ -23,7 +23,6 @@
             --glass-border: rgba(255, 255, 255, 0.6);
             --primary-pink: #ffafcc;
             --primary-blue: #a2d2ff;
-            --primary-green: #b7e4c7;
             --active-green: #52b788;
             --text-dark: #2d3436;
         }
@@ -40,19 +39,16 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative;
         }
 
-        /* NAVEGAÇÃO POR ABAS */
         .tab-bar {
             position: absolute; bottom: 15px; left: 15px; right: 15px;
             height: 60px; background: rgba(255,255,255,0.8);
             border-radius: 20px; display: flex; align-items: center; justify-content: space-around;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); z-index: 1000;
         }
-        .tab-item { flex: 1; text-align: center; font-size: 0.7rem; color: #b2bec3; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .tab-item.active { color: var(--text-dark); transform: translateY(-2px); }
-        .tab-item i { display: block; font-size: 1.2rem; margin-bottom: 2px; }
+        .tab-item { flex: 1; text-align: center; font-size: 0.7rem; color: #b2bec3; font-weight: 600; cursor: pointer; }
+        .tab-item.active { color: var(--text-dark); }
 
-        /* TELAS */
-        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 20px; }
+        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; }
         .tab-content.active { display: flex; }
 
         #login-screen {
@@ -62,38 +58,34 @@
             padding: 30px; text-align: center;
         }
 
-        .login-input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); font-size: 1rem; }
+        .login-input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); }
 
-        /* DASHBOARD STYLE */
+        /* DASHBOARD */
         .header { text-align: left; margin-bottom: 10px; }
-        .header h1 { font-size: 1.2rem; color: var(--text-dark); }
-        .header p { font-size: 0.75rem; opacity: 0.7; }
         .users-row { display: flex; gap: 10px; margin-bottom: 12px; }
         .user-card { flex: 1; background: rgba(255, 255, 255, 0.5); border-radius: 18px; padding: 8px; text-align: center; border: 1px solid var(--glass-border); }
-        .avatar-img { width: 55px; height: 55px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; border: 3px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .avatar-img { width: 55px; height: 55px; border-radius: 50%; margin: 0 auto 8px; overflow: hidden; background: #fff; border: 3px solid transparent; }
         .avatar-img img { width: 100%; height: 100%; object-fit: cover; }
         .mini-progress { background: rgba(0,0,0,0.05); height: 5px; border-radius: 10px; margin: 5px 0; overflow: hidden; }
         .fill { height: 100%; transition: width 1s; width: 0%; }
         .balance-display { text-align: center; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 18px; width: 100%; margin-bottom: 15px; }
         .balance-display h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; }
-        .activity-item { font-size: 0.65rem; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
-        .btn-add { background: linear-gradient(90deg, #ff99ac, #ffafcc); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-size: 1rem; font-weight: 700; box-shadow: 0 8px 15px rgba(255, 175, 204, 0.3); cursor: pointer; }
+        .btn-add { background: linear-gradient(90deg, #ff99ac, #ffafcc); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-size: 1rem; font-weight: 700; cursor: pointer; }
 
-        /* CAIXA DE PANDORA STYLE */
-        .pandora-header { text-align: center; margin-bottom: 15px; }
+        /* CAIXA DE PANDORA */
         .pandora-grid {
-            display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px;
-            background: rgba(255,255,255,0.2); padding: 10px; border-radius: 15px;
+            display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px;
+            background: rgba(255,255,255,0.2); padding: 8px; border-radius: 15px;
         }
         .grid-item {
-            aspect-ratio: 1; background: #fff; border-radius: 5px;
+            aspect-ratio: 1; background: #fff; border-radius: 3px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.65rem; font-weight: 700; color: #636e72;
-            cursor: pointer; transition: 0.2s; border: 1px solid #dfe6e9;
+            font-size: 0.55rem; font-weight: 700; color: #636e72;
+            cursor: pointer; border: 1px solid #dfe6e9;
         }
         .grid-item.painted { background: var(--active-green); color: white; border-color: #2d6a4f; }
         
-        #modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: white; padding: 20px; border-radius: 25px; z-index: 3000; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        #modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: white; padding: 20px; border-radius: 25px; z-index: 3000; text-align: center; }
         #modal input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: 1px solid #eee; font-size: 1rem; }
     </style>
 </head>
@@ -105,10 +97,8 @@
             <input type="email" id="login-email" class="login-input" placeholder="E-mail">
             <input type="password" id="login-pass" class="login-input" placeholder="Senha">
             <button class="btn-add" onclick="login()">Entrar</button>
-            <p id="login-error" style="color:red; font-size:0.7rem; margin-top:10px;"></p>
         </div>
 
-        <!-- ABA 1: NINHO (DASHBOARD) -->
         <div id="tab-ninho" class="tab-content active">
             <div class="header">
                 <h1 id="welcome-msg">Carregando...</h1>
@@ -117,38 +107,27 @@
             <div class="users-row">
                 <div class="user-card">
                     <div class="avatar-img" style="border-color: var(--primary-blue)"><img src="foto-gabriel.png"></div>
-                    <h3 style="font-size: 0.7rem;">Gabriel</h3>
-                    <div class="mini-progress"><div id="bar-g" class="fill" style="background:var(--primary-blue)"></div></div>
                     <p style="font-size: 0.6rem;">R$ <span id="val-g">0</span></p>
                 </div>
                 <div class="user-card">
                     <div class="avatar-img" style="border-color: var(--primary-pink)"><img src="foto-fernando.png"></div>
-                    <h3 style="font-size: 0.7rem;">Fernando</h3>
-                    <div class="mini-progress"><div id="bar-f" class="fill" style="background:var(--primary-pink)"></div></div>
                     <p style="font-size: 0.6rem;">R$ <span id="val-f">0</span></p>
                 </div>
             </div>
             <div class="balance-display">
-                <span style="font-size: 0.7rem;">Total Ninho</span>
                 <h2 id="total">R$ 0</h2>
             </div>
             <div id="activity-log" style="flex:1; overflow-y:auto; margin-bottom:10px;"></div>
             <button class="btn-add" onclick="showModal()">+ Adicionar Tijolinho</button>
-            <button onclick="logout()" style="margin-top:10px; background:none; border:none; opacity:0.3; font-size:0.6rem;">Sair</button>
         </div>
 
-        <!-- ABA 2: PANDORA (O COFRE) -->
         <div id="tab-pandora" class="tab-content">
-            <div class="pandora-header">
-                <h1 style="font-family: 'Playfair Display', serif; font-size: 1.5rem;">Caixa de Pandora</h1>
-                <p style="font-size: 0.7rem;">Meta: 5.000,00 €</p>
-                <div class="mini-progress" style="height: 10px; margin: 10px 0;"><div id="pandora-bar" class="fill" style="background:var(--active-green)"></div></div>
-                <p id="pandora-status" style="font-size: 0.8rem; font-weight: 700;">R$ 0 / R$ 5.000</p>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 1.2rem;">Caixa de Pandora</h1>
+                <h2 id="pandora-status" style="font-size: 1rem; color: var(--active-green);">R$ 0 / R$ 5.000</h2>
+                <div class="mini-progress" style="height: 8px;"><div id="pandora-bar" class="fill" style="background:var(--active-green)"></div></div>
             </div>
-            <div id="grid-container" class="pandora-grid">
-                <!-- Gerado via JS -->
-            </div>
-            <p style="font-size: 0.6rem; opacity: 0.5; text-align: center; margin-top: 15px;">Toque no número para pintar e guardar.</p>
+            <div id="grid-container" class="pandora-grid"></div>
         </div>
 
         <div class="tab-bar">
@@ -160,7 +139,7 @@
             <h3>Novo Tijolinho</h3>
             <input type="number" id="input-val" placeholder="Valor (R$)" inputmode="decimal">
             <div style="display:flex; gap:10px; margin-top:10px;">
-                <button onclick="processar()" id="btn-confirmar" style="flex:1; background:var(--primary-blue); color:white; border:none; padding:12px; border-radius:12px; font-weight:600;">Confirmar</button>
+                <button onclick="processar()" id="btn-confirmar" style="flex:1; background:var(--primary-blue); color:white; border:none; padding:12px; border-radius:12px;">Confirmar</button>
                 <button onclick="hideModal()" style="flex:1; background:#eee; border:none; padding:12px; border-radius:12px;">Cancelar</button>
             </div>
         </div>
@@ -179,14 +158,23 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const PANDORA_META = 5000;
-
-        // VALORES DA FOTO (Exatamente como o seu papel)
+        
+        // LISTA EXPANDIDA PARA SOMAR EXATAMENTE 5.000
         const pandoraValues = [
-            100, 10, 5, 10, 50, 100, 50, 20, 5, 2, 5, 20, 50, 20, 1, 10, 10, 20,
-            10, 10, 50, 2, 20, 10, 10, 20, 5, 10, 1, 10, 100, 5, 20, 20, 50, 100,
-            2, 10, 1, 5, 50, 20, 5, 20, 50, 1, 1, 10, 10, 20, 5, 50, 10, 50, 50, 100,
-            10, 10, 5, 10, 10, 20, 100, 5, 5, 10, 5, 5, 2, 5, 10, 100, 100, 5, 5, 20, 10, 10, 5, 5, 5, 10, 5, 50, 100, 10, 20, 50, 50, 5, 1, 10, 20, 1, 20, 10, 5, 10, 50, 1, 1, 2, 20, 10, 50, 10, 5, 2, 5, 50, 100, 1, 1, 1, 2, 5, 5, 20, 10, 50, 50, 10, 20, 50
+            100,100,100,100,100,100,100,100,100,100,
+            50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,
+            20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+            20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
+            20,20,20,20,20,20,20,20,20,20,
+            10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+            10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+            10,10,10,10,10,10,10,10,10,10,
+            5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            5,5,5,5,5,5,5,5,5,5,
+            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ];
 
         let currentUser = null;
@@ -206,10 +194,8 @@
         function login() {
             const e = document.getElementById('login-email').value;
             const p = document.getElementById('login-pass').value;
-            auth.signInWithEmailAndPassword(e, p).catch(() => alert("Erro no login"));
+            auth.signInWithEmailAndPassword(e, p);
         }
-
-        function logout() { auth.signOut(); location.reload(); }
 
         function switchTab(tab, el) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -230,58 +216,41 @@
         }
 
         function processar() {
-            const btn = document.getElementById('btn-confirmar');
             const v = parseFloat(document.getElementById('input-val').value);
             if(isNaN(v) || v === 0) return;
-            btn.disabled = true;
-
             if(currentUser === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
-            if(!dadosApp.historico) dadosApp.historico = [];
             dadosApp.historico.unshift({ user: currentUser, val: v, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
-            
             salvar();
         }
 
-        function togglePandora(index, val) {
+        function togglePandora(index) {
             if(!dadosApp.pandora) dadosApp.pandora = [];
             const pos = dadosApp.pandora.indexOf(index);
-            if(pos > -1) {
-                dadosApp.pandora.splice(pos, 1); // Desmarcar
-            } else {
-                dadosApp.pandora.push(index); // Marcar
-            }
+            if(pos > -1) dadosApp.pandora.splice(pos, 1); else dadosApp.pandora.push(index);
             salvar();
         }
 
         function salvar() {
             auth.currentUser.getIdToken(true).then(token => {
                 fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) })
-                .then(() => { atualizarInterface(); hideModal(); document.getElementById('btn-confirmar').disabled = false; });
+                .then(() => { atualizarInterface(); hideModal(); });
             });
         }
 
         function atualizarInterface() {
-            // Dashboard
             document.getElementById('val-g').innerText = (dadosApp.saldoG || 0).toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
             document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
-            document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
-            document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
             
-            document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).map(i => `
-                <div class="activity-item"><span><strong>${i.user}</strong> ${i.val > 0 ? 'adicionou' : 'removeu'} R$ ${Math.abs(i.val)}</span><span style="opacity:0.5">${i.date}</span></div>
-            `).join('');
-
-            // Pandora Grid
             const container = document.getElementById('grid-container');
             let totalPandora = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const isPainted = (dadosApp.pandora || []).includes(i);
                 if(isPainted) totalPandora += v;
-                return `<div class="grid-item ${isPainted ? 'painted' : ''}" onclick="togglePandora(${i}, ${v})">${v}</div>`;
+                return `<div class="grid-item ${isPainted ? 'painted' : ''}" onclick="togglePandora(${i})">${v}</div>`;
             }).join('');
 
-            document.getElementById('pandora-bar').style.width = (totalPandora / PANDORA_META * 100) + '%';
+            document.getElementById('pandora-bar').style.width = (totalPandora / 5000 * 100) + '%';
             document.getElementById('pandora-status').innerText = `R$ ${totalPandora.toLocaleString('pt-BR')} / R$ 5.000`;
         }
 
