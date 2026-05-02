@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    <!-- Firebase SDKs (Versão Compat) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -25,65 +25,54 @@
             --text-muted: #8e8e93;
             --card-white: #ffffff;
             --success-green: #34c759;
+            --danger-red: #ff3b30;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-        body { 
-            background: var(--ninho-bg);
-            height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden;
-        }
+        body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .app-shell {
-            width: 100%; max-width: 420px; height: 100dvh;
-            background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; overflow: hidden;
-        }
+        .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; }
 
-        /* LOGIN SCREEN */
-        #login-screen {
-            position: absolute; inset: 0; z-index: 5000;
-            background: #fff; display: none; flex-direction: column; 
-            align-items: center; justify-content: center; padding: 40px; text-align: center;
-        }
+        #login-screen { position: absolute; inset: 0; z-index: 5000; background: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
 
-        /* DASHBOARD ELEMENTS */
         .top-nav { padding: 40px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* DASHBOARD */
+        .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 120px; }
+        .tab-content.active { display: flex; }
+
         .welcome-section { padding: 10px 20px 20px; }
         .welcome-section span { color: var(--ninho-gold); font-weight: 700; }
 
-        .card-saldo {
-            margin: 0 20px 15px; padding: 25px; background: var(--card-white); border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative;
-        }
+        .card-saldo { margin: 0 20px 15px; padding: 25px; background: var(--card-white); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
         .total-amount { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
-        .month-diff { font-size: 0.75rem; color: var(--success-green); font-weight: 700; }
 
-        .card-meta {
-            margin: 0 20px 15px; padding: 20px; background: var(--card-white); border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px;
-        }
+        /* CARDS INDIVIDUAIS GABRIEL E FERNANDO */
+        .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
+        .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .user-mini-card b { font-size: 0.8rem; display: block; margin-bottom: 5px; }
+        .user-mini-card span { font-size: 0.75rem; font-weight: 800; color: var(--ninho-gold); }
+
+        .card-meta { margin: 0 20px 15px; padding: 20px; background: var(--card-white); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px; }
         .progress-track { width: 100%; height: 6px; background: #f0f0f0; border-radius: 10px; margin-top: 8px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--ninho-gold); transition: width 1.5s ease; border-radius: 10px; width: 0%; }
 
-        .log-container { flex: 1; padding: 0 20px; overflow-y: auto; margin-bottom: 90px; }
-        .log-row { padding: 15px 0; border-bottom: 1px solid #f1f1f1; display: flex; align-items: center; gap: 15px; }
+        /* BOTÕES DE AÇÃO */
+        .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
+        .btn-action { flex: 1; padding: 18px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+        .btn-investir { background: var(--text-main); color: white; }
+        .btn-demolir { background: white; color: var(--danger-red); border: 1px solid #eee; }
 
-        /* FOOTER TAB BAR */
-        .footer-tabs {
-            position: absolute; bottom: 0; width: 100%; height: 85px; background: white;
-            display: flex; justify-content: space-around; align-items: center;
-            padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000;
-        }
+        .log-container { padding: 0 20px; }
+        .log-row { padding: 15px 0; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
+
+        /* FOOTER */
+        .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .tab-btn.active { color: var(--ninho-gold); }
 
-        .center-btn {
-            position: absolute; bottom: 45px; left: 50%; transform: translateX(-50%);
-            width: 60px; height: 60px; background: var(--ninho-gold); border-radius: 20px;
-            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white;
-            box-shadow: 0 8px 20px rgba(251, 176, 0, 0.4); z-index: 1100; cursor: pointer;
-        }
-
+        /* MODAL */
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 30px; }
         .modal-card { background: white; width: 100%; padding: 35px; border-radius: 35px; text-align: center; }
     </style>
@@ -91,7 +80,6 @@
 <body>
 
     <div class="app-shell">
-        <!-- LOGIN -->
         <div id="login-screen">
             <h1 style="margin-bottom: 20px;">🔑 Acesso Ninho</h1>
             <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
@@ -105,43 +93,50 @@
             <span style="font-size: 1.5rem;">🔔</span>
         </div>
 
-        <div id="tab-ninho" class="tab-content active" style="display:flex; flex-direction:column; height:100%;">
+        <!-- ABA INÍCIO -->
+        <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section">
-                <h2 id="welcome-msg">Olá, Fernando! 👋</h2>
+                <h2 id="welcome-msg">Olá! 👋</h2>
                 <p>Vamos construir seu <span>novo lar!</span></p>
             </div>
 
             <div class="card-saldo">
-                <h3 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Saldo de Tijolos</h3>
+                <h3 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Saldo Acumulado</h3>
                 <div class="total-amount" id="total">R$ 0,00</div>
-                <div class="month-diff">📈 + R$ <span id="cdi-val">0,00</span> (CDI 115%)</div>
+                <div style="font-size: 0.75rem; color: var(--success-green); font-weight: 700;">📈 + R$ <span id="cdi-val">0,00</span> (CDI 115%)</div>
+            </div>
+
+            <div class="users-row">
+                <div class="user-mini-card"><b>Gabriel</b><span id="val-g">R$ 0</span></div>
+                <div class="user-mini-card"><b>Fernando</b><span id="val-f">R$ 0</span></div>
             </div>
 
             <div class="card-meta">
                 <div style="font-size: 1.5rem;">🎯</div>
                 <div style="flex:1;">
-                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Meta da Casa</p>
-                    <h4 style="font-size: 1rem; font-weight: 800;">R$ 100.000,00</h4>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Meta 100K</p>
                     <div class="progress-track"><div id="global-bar" class="progress-fill"></div></div>
                 </div>
                 <span id="global-perc" style="font-size:0.75rem; font-weight:800; color:var(--ninho-gold)">0%</span>
             </div>
 
+            <div class="actions-row">
+                <button class="btn-action btn-investir" onclick="showModal('add')">INVESTIR 🧱</button>
+                <button class="btn-action btn-demolir" onclick="showModal('remove')">DEMOLIR 🔨</button>
+            </div>
+
             <div class="log-container" id="activity-log"></div>
         </div>
 
-        <!-- PANDORA VIEW -->
-        <div id="tab-pandora" class="tab-content" style="display:none; flex-direction:column; height:100%;">
+        <!-- ABA PANDORA -->
+        <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
-            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(35px, 1fr)); gap:6px; padding:20px;"></div>
+            <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(40px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
 
-        <div class="center-btn" onclick="showModal('add')">＋</div>
-
         <div class="footer-tabs">
-            <div class="tab-btn active" id="nav-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Início</div>
-            <div style="width: 60px;"></div>
-            <div class="tab-btn" id="nav-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
+            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Início</div>
+            <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
             <div class="tab-btn" onclick="logout()"><i>🚪</i>Sair</div>
         </div>
 
@@ -193,15 +188,15 @@
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
-            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + tab).style.display = 'flex';
+            document.getElementById('tab-' + tab).classList.add('active');
             if(el) el.classList.add('active');
         }
 
         function conectarFirebase() {
             auth.currentUser.getIdToken().then(token => {
-                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { cache: 'no-store' })
+                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`)
                 .then(res => res.json()).then(data => { if(data) { dadosApp = data; atualizarInterface(); } });
             });
             setTimeout(conectarFirebase, 5000);
@@ -242,6 +237,8 @@
             
             document.getElementById('welcome-msg').innerText = `Olá, ${user}! 👋`;
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
+            document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
             const perc = Math.min((totalVal / 100000 * 100), 100);
@@ -251,18 +248,18 @@
             const container = document.getElementById('grid-container');
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i);
-                return `<div class="tile ${active ? 'active' : ''}" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; border-radius:8px; font-size:0.6rem; display:flex; align-items:center; justify-content:center; color:${active ? '#fff' : '#aaa'}; font-weight:800; border:1px solid #eee;">${v}</div>`;
+                return `<div class="tile" onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--ninho-gold)' : 'white'}; border-radius:8px; font-size:0.6rem; display:flex; align-items:center; justify-content:center; color:${active ? '#fff' : '#aaa'}; font-weight:800; border:1px solid #eee;">${v}</div>`;
             }).join('');
             
             document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
                 <div class="log-row">
-                    <div style="flex:1;"><b>Aporte ${i.val > 0 ? 'manual' : 'removido'}</b><br><small style="color:#aaa">${i.date}, ${i.time}</small></div>
-                    <div style="font-weight:800; color:${i.val > 0 ? 'var(--success-green)' : '#ff3b30'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
+                    <div><b>${i.val > 0 ? 'Investimento' : 'Retirada'} - ${i.user}</b><br><small>${i.date}, ${i.time}</small></div>
+                    <div style="font-weight:800; color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
                 </div>
             `).join('');
         }
 
-        function showModal(mode) { currentMode = mode; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
+        function showModal(mode) { currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "NOVO INVESTIMENTO 🧱"; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
     </script>
 </body>
