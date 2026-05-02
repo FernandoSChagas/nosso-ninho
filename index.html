@@ -236,7 +236,7 @@
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
             
             registrarAtividade(user, v, "Ninho");
-            atualizarInterface(); // Atualiza local imediato
+            atualizarInterface();
             salvar();
         }
 
@@ -274,27 +274,29 @@
         }
 
         function atualizarInterface() {
-            const sG = dadosApp.saldoG || 0; const sF = dadosApp.saldoF || 0; const totalVal = sG + sF;
+            const sG = dadosApp.saldoG || 0; 
+            const sF = dadosApp.saldoF || 0; 
+            const totalVal = sG + sF;
+            
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
             document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
-            // Meta do nosso ninho (100k)
-            const percGlobal = (totalVal / 100000 * 100);
-            const pathGlobal = document.getElementById('global-arc');
-            pathGlobal.style.strokeDashoffset = 251 - (251 * (Math.min(percGlobal, 100) / 100));
+            // CORREÇÃO: Meta Geral do Nosso Ninho (Base 100k)
+            const percGlobal = (totalVal / 100000) * 100;
+            document.getElementById('global-arc').style.strokeDashoffset = 251 - (251 * (Math.min(percGlobal, 100) / 100));
             document.getElementById('global-perc').innerText = Math.floor(Math.min(percGlobal, 100)) + '%';
 
-            // Meta Individual Gabriel (50k)
-            const percG = (sG / 50000 * 100);
-            const pathG = document.getElementById('arc-g');
-            pathG.style.strokeDashoffset = 251 - (251 * (Math.min(percG, 100) / 100));
+            // CORREÇÃO: Meta Individual Gabriel (Base 50k)
+            const percG = (sG / 50000) * 100;
+            const arcG = document.getElementById('arc-g');
+            if(arcG) arcG.style.strokeDashoffset = 251 - (251 * (Math.min(percG, 100) / 100));
 
-            // Meta Individual Fernando (50k)
-            const percF = (sF / 50000 * 100);
-            const pathF = document.getElementById('arc-f');
-            pathF.style.strokeDashoffset = 251 - (251 * (Math.min(percF, 100) / 100));
+            // CORREÇÃO: Meta Individual Fernando (Base 50k)
+            const percF = (sF / 50000) * 100;
+            const arcF = document.getElementById('arc-f');
+            if(arcF) arcF.style.strokeDashoffset = 251 - (251 * (Math.min(percF, 100) / 100));
 
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
