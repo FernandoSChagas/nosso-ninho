@@ -138,6 +138,7 @@
 <body>
 
     <div class="iphone-frame">
+        <!-- LOGIN -->
         <div id="login-screen">
             <h2 style="margin-bottom: 20px;">Nosso Ninho 🏠</h2>
             <input type="email" id="login-email" class="login-input" placeholder="E-mail">
@@ -240,7 +241,6 @@
             if (!auth.currentUser) return;
             
             auth.currentUser.getIdToken().then(token => {
-                // Adicionamos o token de autenticação na URL para evitar o "Permission Denied"
                 fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { cache: 'no-store' }) 
                     .then(res => res.json())
                     .then(data => {
@@ -258,7 +258,7 @@
             const input = document.getElementById('input-val');
             const v = parseFloat(input.value);
             
-            if(isNaN(v) || v <= 0) return;
+            if(isNaN(v) || v === 0) return; // Permite negativos agora
 
             btn.disabled = true;
             btn.innerText = "Gravando...";
@@ -292,7 +292,7 @@
                         hideModal(); 
                         input.value = '';
                     } else {
-                        alert("Erro de permissão. Tente sair e entrar novamente no app.");
+                        alert("Erro de permissão. Saia e entre novamente.");
                     }
                     btn.disabled = false;
                     btn.innerText = "Confirmar";
@@ -303,14 +303,14 @@
         function atualizarInterface() {
             document.getElementById('val-g').innerText = (dadosApp.saldoG || 0).toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
-            document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
-            document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
+            document.getElementById('bar-g').style.width = Math.min(Math.max(((dadosApp.saldoG || 0)/50000 * 100), 0), 100) + '%';
+            document.getElementById('bar-f').style.width = Math.min(Math.max(((dadosApp.saldoF || 0)/50000 * 100), 0), 100) + '%';
             document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
             
             const logDiv = document.getElementById('activity-log');
             logDiv.innerHTML = (dadosApp.historico || []).map(item => `
                 <div class="activity-item">
-                    <span><strong>${item.user}</strong> adicionou R$ ${item.val.toLocaleString('pt-BR')}</span>
+                    <span><strong>${item.user}</strong> ${item.val > 0 ? 'adicionou' : 'removeu'} R$ ${Math.abs(item.val).toLocaleString('pt-BR')}</span>
                     <span style="opacity:0.5">${item.date}</span>
                 </div>
             `).join('');
