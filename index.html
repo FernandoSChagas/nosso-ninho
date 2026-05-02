@@ -172,7 +172,24 @@
         const auth = firebase.auth();
         let currentMode = 'add';
         let dadosApp = { saldoG: 0, saldoF: 0, historico: [], pandora: [] };
-        const frases = ["Continue que a casa tá ficando pronta! 🏠", "Cada tijolo é um passo mais perto do nosso sonho! ✨", "Nosso ninho está crescendo a cada dia! 🐥", "Orgulho do que estamos construindo juntos! ❤️", "Foco na meta, o futuro nos espera! 🚀"];
+        
+        const frases = [
+            "Continue que a casa tá ficando pronta! 🏠",
+            "Cada tijolo é um passo mais perto do nosso sonho! ✨",
+            "Nosso ninho está crescendo a cada dia! 🐥",
+            "Orgulho do que estamos construindo juntos! ❤️",
+            "Foco na meta, o futuro nos espera! 🚀",
+            "Mais um tijolo, menos um dia de espera! 🧱",
+            "Onde há amor e foco, há um lar sendo feito! 👷‍♂️",
+            "A fundação está sólida, falta pouco para o telhado! 🏗️",
+            "Nossa disciplina hoje é o conforto de amanhã! ☕",
+            "Nada vence a nossa união rumo aos 100k! 💪",
+            "Quem planeja, realiza. Estamos no caminho certo! 📍",
+            "A paz de um lar próprio não tem preço. Avante! 🌅",
+            "Tijolo por tijolo, estamos escrevendo nossa história! 📖",
+            "O esforço é temporário, a casa é para sempre! 🌳",
+            "Vocês são um time imbatível. Mantenham o ritmo! 👫"
+        ];
 
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort((a,b) => b-a);
@@ -247,10 +264,7 @@
             
             registrarAtividade(user, v, "Ninho");
             atualizarInterface();
-            
-            // LIMPA A CAIXA APÓS PROCESSAR
             input.value = '';
-            
             salvar();
         }
 
@@ -297,7 +311,6 @@
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
-            // ARC CONSTANT
             const arcLength = 126;
 
             // Meta Geral (100k)
@@ -330,8 +343,6 @@
             currentMode = mode; 
             document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "COLOCAR TIJOLO 🧱"; 
             document.getElementById('modal').style.display = 'flex'; 
-            
-            // GARANTE QUE O CAMPO ESTÁ VAZIO AO ABRIR O MODAL
             document.getElementById('input-val').value = '';
             document.getElementById('input-val').focus(); 
         }
