@@ -30,72 +30,79 @@
 
         body { background: var(--ninho-bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        /* TELA DE SPLASH (EVITA VAZAMENTO) */
-        #splash-screen {
-            position: absolute; inset: 0; z-index: 9000;
-            background: var(--ninho-bg); display: flex; 
-            align-items: center; justify-content: center;
-            transition: opacity 0.4s ease;
-        }
+        #splash-screen { position: absolute; inset: 0; z-index: 9000; background: var(--ninho-bg); display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
+        #login-screen { position: absolute; inset: 0; z-index: 5000; background: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
 
-        /* LOGIN OCULTO POR PADRÃO */
-        #login-screen { 
-            position: absolute; inset: 0; z-index: 5000; 
-            background: white; display: none; flex-direction: column; 
-            align-items: center; justify-content: center; padding: 40px; text-align: center; 
-        }
-
-        /* APP SHELL COM OPACIDADE ZERO PARA NÃO VAZAR */
-        .app-shell { 
-            width: 100%; max-width: 420px; height: 100dvh; 
-            background: var(--ninho-bg); display: flex; flex-direction: column; 
-            position: relative; opacity: 0; transition: opacity 0.5s ease;
-        }
+        .app-shell { width: 100%; max-width: 420px; height: 100dvh; background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; opacity: 0; transition: opacity 0.5s ease; }
 
         .top-nav { padding: 45px 20px 10px; display: flex; justify-content: flex-end; align-items: center; }
         .btn-alerta { font-size: 1.5rem; cursor: pointer; background: none; border: none; }
+
         .tab-content { display: none; flex-direction: column; height: 100%; overflow-y: auto; padding-bottom: 110px; scroll-behavior: smooth; }
         .tab-content.active { display: flex; }
+
         .welcome-section { padding: 10px 20px 10px; text-align: center; }
         .welcome-section b { color: var(--ninho-gold); text-transform: capitalize; }
+
         .card-saldo { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: center; }
         .chart-box { position: relative; width: 160px; height: 85px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
         .gauge-svg { width: 100%; height: 100%; }
         .gauge-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; stroke-linecap: round; }
         .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
         .users-row { display: flex; gap: 10px; padding: 0 20px 15px; }
         .user-mini-card { flex: 1; background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
         .user-mini-card img { width: 45px; height: 45px; border-radius: 50%; margin-bottom: 5px; object-fit: cover; border: 2px solid #f8f8f8; }
         .meta-tag { font-size: 0.55rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+
         .actions-row { display: flex; gap: 12px; padding: 0 20px 20px; }
         .btn-action { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+
         .log-container { padding: 0 20px; text-align: center; }
         .log-row { padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .log-val { font-size: 0.85rem; font-weight: 800; margin-top: 2px; }
+
         .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 85px; background: white; display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000; }
         .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .tab-btn.active { color: var(--ninho-gold); }
+
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; padding: 30px; }
+
+        /* ANIMAÇÃO DE QUEBRA (DEMOLIÇÃO) */
+        .break-effect {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+            background: rgba(0,0,0,0);
+            display: none;
+        }
+        .crack {
+            position: absolute; background: rgba(0,0,0,0.4);
+            transform: rotate(var(--r));
+            width: 2px; height: var(--h);
+            top: var(--y); left: var(--x);
+            box-shadow: 0 0 2px rgba(255,255,255,0.2);
+            animation: crackFade 0.8s forwards;
+        }
+        @keyframes crackFade { 0% { opacity: 1; } 100% { opacity: 0; height: calc(var(--h) * 1.5); } }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE CARREGAMENTO (ESTRATÉGIA ANTI-VAZAMENTO) -->
+    <div id="break-overlay" class="break-effect"></div>
+
     <div id="splash-screen">
-        <h2 style="font-weight: 800; color: var(--ninho-gold); letter-spacing: -1px;">nosso ninho</h2>
+        <h2 style="font-weight: 800; color: var(--ninho-gold);">nosso ninho</h2>
     </div>
 
-    <!-- TELA DE LOGIN -->
     <div id="login-screen">
-        <h1 style="margin-bottom: 20px; font-weight: 800; letter-spacing: -1px;">nosso ninho</h1>
-        <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd; outline:none;" placeholder="E-mail">
-        <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd; outline:none;" placeholder="Senha">
+        <h1 style="margin-bottom: 20px; font-weight: 800;">nosso ninho</h1>
+        <input type="email" id="login-email" style="width:100%; padding:15px; margin-bottom:10px; border-radius:15px; border:1px solid #ddd;" placeholder="E-mail">
+        <input type="password" id="login-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:15px; border:1px solid #ddd;" placeholder="Senha">
         <button onclick="login()" style="width:100%; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;">Entrar</button>
     </div>
 
-    <!-- SHELL DO APP -->
     <div class="app-shell" id="app-shell">
         <div class="top-nav"><button class="btn-alerta" onclick="mostrarMotivacao()">🔔</button></div>
+        
         <div id="tab-ninho" class="tab-content active">
             <div class="welcome-section"><h2>Olá, <b id="user-name">Usuário</b> 👋</h2><p>Construindo nosso <span>novo lar!</span></p></div>
             <div class="card-saldo">
@@ -130,6 +137,7 @@
             </div>
             <div class="log-container" id="activity-log"></div>
         </div>
+
         <div id="tab-pandora" class="tab-content">
             <div class="welcome-section"><h2>Cofre Pandora</h2><p>Meta: <span>R$ 5.000</span></p></div>
             <div class="card-saldo">
@@ -138,11 +146,13 @@
             </div>
             <div id="grid-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(42px, 1fr)); gap:8px; padding:20px;"></div>
         </div>
+
         <div class="footer-tabs">
-            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Início</div>
+            <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Ninho</div>
             <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
             <div class="tab-btn" onclick="logout()"><i>🚪</i>Sair</div>
         </div>
+
         <div id="modal">
             <div style="background:white; width:85%; padding:30px; border-radius:30px; text-align:center;">
                 <h3 id="modal-title">Operação</h3>
@@ -174,16 +184,13 @@
         const rawValues = [...Array(10).fill(100), ...Array(20).fill(50), ...Array(60).fill(20), ...Array(80).fill(10), ...Array(100).fill(5), ...Array(20).fill(2), ...Array(10).fill(1)];
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
 
-        // LÓGICA DE INICIALIZAÇÃO BLINDADA
         auth.onAuthStateChanged(user => { 
             const splash = document.getElementById('splash-screen');
             const login = document.getElementById('login-screen');
             const app = document.getElementById('app-shell');
-
             if (user) { 
                 const name = user.email.includes('fernando') ? 'Fernando' : 'Gabriel';
                 document.getElementById('user-name').innerText = name;
-                
                 conectarFirebase().then(() => {
                     login.style.display = 'none';
                     app.style.opacity = '1';
@@ -214,16 +221,24 @@
             const res = await fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`);
             const data = await res.json();
             if(data) { dadosApp = data; atualizarInterface(); }
-            // Inicia loop de sync silencioso
             setTimeout(conectarFirebase, 6000);
         }
 
-        function setArc(id, percent) {
-            const path = document.getElementById(id);
-            if(path) { path.style.strokeDashoffset = 251 - (251 * (Math.min(percent, 100) / 100)); }
+        function triggerBreak() {
+            const overlay = document.getElementById('break-overlay');
+            overlay.innerHTML = '';
+            overlay.style.display = 'block';
+            for(let i=0; i<15; i++){
+                const crack = document.createElement('div');
+                crack.className = 'crack';
+                crack.style.setProperty('--x', Math.random()*100 + '%');
+                crack.style.setProperty('--y', Math.random()*100 + '%');
+                crack.style.setProperty('--r', Math.random()*360 + 'deg');
+                crack.style.setProperty('--h', (Math.random()*100 + 50) + 'px');
+                overlay.appendChild(crack);
+            }
+            setTimeout(() => overlay.style.display = 'none', 800);
         }
-
-        function animacaoDemolir() { confetti({ particleCount: 80, spread: 50, origin: { y: 0.6 }, colors: ['#444', '#888', '#ccc'], gravity: 2 }); }
 
         function confirmDemolish() { if(confirm("Atenção! Deseja mesmo demolir uma parte da casa?")) { showModal('remove'); } }
 
@@ -232,7 +247,7 @@
             let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
-            if(currentMode === 'remove') { v = -v; animacaoDemolir(); } 
+            if(currentMode === 'remove') { v = -v; triggerBreak(); } 
             else { confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] }); }
             if(user === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
             registrarAtividade(user, v, "Ninho");
@@ -245,7 +260,7 @@
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
             const val = pandoraValues[index];
             if(pos > -1) {
-                if(confirm("Deseja retirar este valor do cofre?")) { dadosApp.pandora.splice(pos, 1); registrarAtividade(user, -val, "Cofre"); animacaoDemolir(); }
+                if(confirm("Deseja retirar este valor do cofre?")) { dadosApp.pandora.splice(pos, 1); registrarAtividade(user, -val, "Cofre"); triggerBreak(); }
             } else {
                 dadosApp.pandora.push(index);
                 confetti({ particleCount: 50, spread: 50, origin: { y: 0.8 }, colors: ['#34c759', '#ffffff'] });
@@ -270,9 +285,11 @@
             document.getElementById('val-g').innerText = 'R$ ' + sG.toLocaleString('pt-BR');
             document.getElementById('val-f').innerText = 'R$ ' + sF.toLocaleString('pt-BR');
             document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            setArc('global-arc', (totalVal / 100000 * 100));
-            document.getElementById('global-perc').innerText = Math.floor((totalVal / 100000 * 100)) + '%';
-            setArc('arc-g', (sG / 50000 * 100)); setArc('arc-f', (sF / 50000 * 100));
+            const perc = (totalVal / 100000 * 100);
+            document.getElementById('global-arc').style.strokeDashoffset = 251 - (251 * (Math.min(perc, 100) / 100));
+            document.getElementById('global-perc').innerText = Math.floor(Math.min(perc, 100)) + '%';
+            const arcG = document.getElementById('arc-g'); if(arcG) arcG.style.strokeDashoffset = 251 - (251 * (Math.min(sG/50000*100, 100) / 100));
+            const arcF = document.getElementById('arc-f'); if(arcF) arcF.style.strokeDashoffset = 251 - (251 * (Math.min(sF/50000*100, 100) / 100));
             const container = document.getElementById('grid-container'); let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i); if(active) totalP += v;
@@ -288,8 +305,6 @@
 
         function showModal(mode) { currentMode = mode; document.getElementById('modal-title').innerText = mode === 'remove' ? "DEMOLIR TIJOLO 🔨" : "COLOCAR TIJOLO 🧱"; document.getElementById('modal').style.display = 'flex'; document.getElementById('input-val').focus(); }
         function hideModal() { document.getElementById('modal').style.display = 'none'; }
-        let touchStart = 0; window.addEventListener('touchstart', (e) => touchStart = e.touches[0].pageY);
-        window.addEventListener('touchmove', (e) => { if (window.scrollY === 0 && e.touches[0].pageY - touchStart > 150) location.reload(); });
     </script>
 </body>
 </html>
