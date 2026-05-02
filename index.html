@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Ultra Glass</title>
+    <title>Nosso Ninho - Ultra Glass 2.0</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
@@ -19,7 +19,7 @@
 
         :root {
             --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.4);
             --accent-blue: #007AFF;
             --accent-pink: #FF2D55;
             --accent-green: #34C759;
@@ -29,30 +29,29 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body { 
-            background: linear-gradient(160deg, #a2c2e1 0%, #f7bbd0 100%);
+            background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000') no-repeat center center fixed;
+            background-size: cover;
             height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden;
         }
 
         .iphone-container {
             width: 100%; max-width: 420px; height: 100dvh;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
             display: flex; flex-direction: column; position: relative; overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.05);
+            box-shadow: 0 0 50px rgba(0,0,0,0.2);
         }
 
-        /* LOGIN SCREEN COM FUNDO DINAMICO */
+        /* LOGIN SCREEN */
         #login-screen {
             position: absolute; inset: 0; z-index: 5000;
-            background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000') no-repeat center center;
-            background-size: cover; display: none; flex-direction: column; 
+            background: rgba(0,0,0,0.2); display: none; flex-direction: column; 
             align-items: center; justify-content: center; padding: 40px; text-align: center;
         }
-        .login-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); z-index: -1; }
-        .login-card { background: rgba(255,255,255,0.8); padding: 35px; border-radius: 40px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .login-card { background: var(--glass-bg); padding: 35px; border-radius: 40px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
-        /* GAUGE CHART (ESQUERDA PARA DIREITA) */
+        /* GAUGE CHART (CORRIGIDO: ESQUERDA PARA DIREITA) */
         .chart-box { position: relative; width: 220px; height: 120px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
-        .gauge-svg { width: 100%; height: 100%; transform: scaleX(-1); }
+        .gauge-svg { width: 100%; height: 100%; }
         .gauge-bg { fill: none; stroke: rgba(0,0,0,0.05); stroke-width: 10; stroke-linecap: round; }
         .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1); }
         .gauge-label { position: absolute; bottom: 0; font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
@@ -62,16 +61,16 @@
 
         .user-grid { display: flex; gap: 12px; padding: 15px 20px; }
         .u-card { flex: 1; padding: 15px; background: var(--glass-bg); border-radius: 30px; border: 1px solid var(--glass-border); text-align: center; }
-        .u-card img { width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; margin-bottom: 8px; }
+        .u-card img { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; margin-bottom: 8px; }
         
         .cdi-info { font-size: 0.65rem; font-weight: 800; color: var(--accent-green); text-transform: uppercase; margin-top: 5px; }
 
         .log-section { flex: 1; padding: 10px 25px; overflow-y: auto; margin-bottom: 90px; }
-        .log-item { padding: 12px 15px; background: rgba(255,255,255,0.5); border-radius: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .log-item { padding: 12px 15px; background: rgba(255,255,255,0.4); border-radius: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        .footer-nav { position: absolute; bottom: 20px; left: 20px; right: 20px; height: 70px; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); border-radius: 25px; display: flex; align-items: center; justify-content: space-around; border: 1px solid var(--glass-border); z-index: 1000; }
-        .nav-link { text-align: center; color: #8e8e93; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
-        .nav-link.active { color: var(--accent-blue); }
+        .footer-nav { position: absolute; bottom: 20px; left: 20px; right: 20px; height: 70px; background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); border-radius: 25px; display: flex; align-items: center; justify-content: space-around; border: 1px solid var(--glass-border); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .nav-link { text-align: center; color: #1d1d1f; opacity: 0.4; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
+        .nav-link.active { color: var(--accent-blue); opacity: 1; }
 
         .btn-ios { flex: 1; padding: 18px; border-radius: 20px; border: none; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
         .btn-primary { background: var(--text-main); color: white; }
@@ -79,6 +78,17 @@
 
         #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; padding: 30px; }
         .modal-body { background: white; width: 100%; padding: 35px; border-radius: 40px; text-align: center; }
+
+        /* PANDORA RESPONSIVA */
+        .pandora-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); 
+            gap: 6px; 
+            padding: 20px; 
+            overflow-y: auto;
+            flex: 1;
+            margin-bottom: 90px;
+        }
     </style>
 </head>
 <body>
@@ -87,7 +97,6 @@
         
         <!-- LOGIN SCREEN -->
         <div id="login-screen">
-            <div class="login-overlay"></div>
             <div class="login-card">
                 <h1 style="font-weight:800; margin-bottom:10px;">Future Nest</h1>
                 <p style="font-size:0.8rem; color:#8e8e93; margin-bottom:30px;">O amanhã começa hoje.</p>
@@ -107,6 +116,7 @@
                 <div class="chart-box">
                     <svg class="gauge-svg" viewBox="0 0 100 50">
                         <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
+                        <!-- Gráfico corrigido para preencher da esquerda para a direita -->
                         <path id="global-arc" class="gauge-fill" style="stroke:var(--accent-blue)" d="M10,45 A35,35 0 0,1 90,45" />
                     </svg>
                     <div id="global-perc" class="gauge-label">0%</div>
@@ -150,7 +160,7 @@
         <div id="tab-pandora" class="tab-content" style="display:none; flex-direction:column; height:100%;">
             <div class="header"><h1>Cofre Pandora</h1></div>
             <div class="main-card"><h2 id="pandora-status">R$ 0</h2></div>
-            <div id="grid-container" style="display:grid; grid-template-columns:repeat(10,1fr); gap:5px; padding:20px;"></div>
+            <div id="grid-container" class="pandora-grid"></div>
         </div>
 
         <div class="footer-nav">
@@ -219,6 +229,7 @@
 
         function setArc(id, percent) {
             const path = document.getElementById(id);
+            // Corrige a lógica do dashoffset para carregar da esquerda para a direita no sentido horário
             const dash = 251 - (251 * (Math.min(percent, 100) / 100));
             path.style.strokeDashoffset = dash;
         }
@@ -267,7 +278,6 @@
             document.getElementById('val-f').innerText = `R$ ${sF.toLocaleString('pt-BR')}`;
             document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR');
             
-            // RENDIMENTO CDI 115% INDIVIDUAL (Aprox 0.95% ao mês)
             document.getElementById('cdi-g').innerText = (sG * 0.0095).toLocaleString('pt-BR');
             document.getElementById('cdi-f').innerText = (sF * 0.0095).toLocaleString('pt-BR');
             
@@ -281,7 +291,7 @@
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i);
                 if(active) totalP += v;
-                return `<div onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--accent-blue)' : 'rgba(0,0,0,0.05)'}; border-radius:5px; font-size:0.5rem; display:flex; align-items:center; justify-content:center; color:${active ? '#fff' : '#ccc'}; font-weight:800;">${v}</div>`;
+                return `<div onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--accent-blue)' : 'rgba(255,255,255,0.4)'}; border-radius:8px; font-size:0.6rem; display:flex; align-items:center; justify-content:center; color:${active ? '#fff' : 'rgba(0,0,0,0.3)'}; font-weight:800; border: 1px solid var(--glass-border);">${v}</div>`;
             }).join('');
             document.getElementById('pandora-status').innerText = `R$ ${totalP.toLocaleString('pt-BR')}`;
             
