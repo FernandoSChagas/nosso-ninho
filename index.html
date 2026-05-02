@@ -77,7 +77,25 @@
         .log-row { padding: 14px; margin-bottom: 8px; background: white; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(0,0,0,0.01); }
         .log-val { font-weight: 700; font-size: 1rem; margin: 4px 0; }
 
-        .footer-tabs { position: absolute; bottom: 0; width: 100%; height: 90px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding-bottom: 25px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; }
+        /* RODAPÉ CORRIGIDO PARA IPHONE */
+        .footer-tabs { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: auto; 
+            min-height: 85px;
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom, 20px); 
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.05); 
+            z-index: 1000; 
+        }
+
         .tab-btn { text-align: center; color: #a1a1a6; font-size: 0.65rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .tab-btn i { font-style: normal; font-size: 1.4rem; }
         .tab-btn.active { color: var(--ninho-gold); }
@@ -167,7 +185,6 @@
             </div>
         </div>
 
-        <!-- RODAPÉ ATUALIZADO -->
         <div class="footer-tabs">
             <div class="tab-btn active" id="btn-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>NINHO</div>
             <div class="tab-btn" id="btn-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>COFRE</div>
