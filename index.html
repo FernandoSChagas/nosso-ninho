@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Ninho - Cloud</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #dcf0ff 0%, #ffeaf2 100%);
+            --glass: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --primary-pink: #ffafcc;
+            --primary-blue: #a2d2ff;
+            --text-dark: #2d3436;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: var(--bg-gradient);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .iphone-frame {
+            width: 380px;
+            height: 820px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 50px;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .header { text-align: left; margin-bottom: 20px; padding-left: 10px; }
+        .header h1 { font-size: 1.4rem; color: var(--text-dark); }
+
+        .users-row { display: flex; gap: 15px; margin-bottom: 15px; }
+
+        .user-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .avatar-img {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #999;
+        }
+
+        .mini-progress { background: rgba(0,0,0,0.05); height: 6px; border-radius: 10px; margin: 8px 0; overflow: hidden; }
+        .fill { height: 100%; transition: width 1s ease-in-out; width: 0%; }
+        .fill-g { background: var(--primary-blue); }
+        .fill-f { background: var(--primary-pink); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+
+        .balance-display {
+            text-align: center;
+            background: rgba(255,255,255,0.3);
+            padding: 15px;
+            border-radius: 25px;
+            width: 100%;
+        }
+
+        .balance-display h2 { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--text-dark); }
+
+        .house-art { width: 140px; animation: float 4s ease-in-out infinite; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .recent-activity {
+            width: 100%;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 15px;
+            height: 180px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            font-size: 0.75rem;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-add {
+            background: linear-gradient(90deg, #ff99ac, #ffafcc);
+            color: white; border: none; width: 100%; padding: 18px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: 700;
+            box-shadow: 0 10px 20px rgba(255, 175, 204, 0.4);
+            cursor: pointer;
+        }
+
+        #setup-screen {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: var(--bg-gradient); z-index: 200; border-radius: 50px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px; text-align: center;
+        }
+
+        #modal {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 85%; background: white;
+            padding: 25px; border-radius: 30px; z-index: 100; text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        #modal input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <div class="iphone-frame">
+        <!-- Tela de Seleção de Usuário -->
+        <div id="setup-screen">
+            <h2>Nosso Ninho Cloud</h2>
+            <p style="margin: 20px 0;">Quem está usando este celular?</p>
+            <button class="btn-add" onclick="setOwner('Fernando')" style="margin-bottom: 10px;">Eu sou o Fernando</button>
+            <button class="btn-add" onclick="setOwner('Gabriel')" style="background: #a2d2ff;">Eu sou o Gabriel</button>
+        </div>
+
+        <div class="header">
+            <h1 id="welcome-msg">Nosso Ninho</h1>
+            <p>Sincronizado em tempo real ☁️</p>
+        </div>
+
+        <div class="users-row">
+            <div class="user-card">
+                <div class="avatar-img" style="border: 2px solid var(--primary-blue)">G</div>
+                <h3 style="font-size: 0.8rem;">Gabriel</h3>
+                <div class="mini-progress"><div id="bar-g" class="fill fill-g"></div></div>
+                <p style="font-size: 0.7rem;">R$ <span id="val-g">0</span></p>
+            </div>
+            <div class="user-card">
+                <div class="avatar-img" style="border: 2px solid var(--primary-pink)">F</div>
+                <h3 style="font-size: 0.8rem;">Fernando</h3>
+                <div class="mini-progress"><div id="bar-f" class="fill fill-f"></div></div>
+                <p style="font-size: 0.7rem;">R$ <span id="val-f">0</span></p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="balance-display">
+                <span>Total Construído</span>
+                <h2 id="total">R$ 0</h2>
+            </div>
+
+            <img src="https://cdn-icons-png.flaticon.com/512/619/619153.png" class="house-art" id="house-icon">
+
+            <div class="recent-activity" id="activity-log"></div>
+            
+            <button class="btn-add" onclick="showModal()">+ Adicionar Tijolinho</button>
+            <button onclick="demolirCasa()" style="background:none; border:none; color: #e74c3c; font-size: 0.7rem; cursor:pointer; margin-top:10px;">⚠️ Demolir Casa</button>
+        </div>
+        
+        <div id="modal">
+            <h3>Novo Tijolinho</h3>
+            <input type="number" id="input-val" placeholder="Valor em R$">
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button onclick="processar()" style="flex:1; background:var(--primary-blue); color:white; border:none; padding:12px; border-radius:12px; font-weight:600;">Confirmar</button>
+                <button onclick="hideModal()" style="flex:1; background:#eee; border:none; padding:12px; border-radius:12px;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SUA URL DO FIREBASE INTEGRADA ---
+        const DB_URL = "https://nosso-ninho-c2ddf-default-rtdb.firebaseio.com/.json"; 
+
+        let owner = localStorage.getItem('app_owner');
+        let dadosApp = { saldoG: 0, saldoF: 0, historico: [] };
+
+        window.onload = () => {
+            if(owner) {
+                document.getElementById('setup-screen').style.display = 'none';
+                document.getElementById('welcome-msg').innerText = `Ninho do ${owner}`;
+                conectarFirebase();
+            }
+        };
+
+        function setOwner(name) {
+            owner = name;
+            localStorage.setItem('app_owner', name);
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('welcome-msg').innerText = `Ninho do ${owner}`;
+            conectarFirebase();
+        }
+
+        function conectarFirebase() {
+            fetch(DB_URL)
+                .then(res => res.json())
+                .then(data => {
+                    if(data) {
+                        dadosApp = data;
+                        atualizarInterface();
+                    }
+                });
+            setTimeout(conectarFirebase, 3000); 
+        }
+
+        function processar() {
+            const valor = parseFloat(document.getElementById('input-val').value);
+            if(isNaN(valor)) return;
+
+            if(owner === 'Gabriel') dadosApp.saldoG += valor;
+            else dadosApp.saldoF += valor;
+
+            const log = {
+                user: owner,
+                val: valor,
+                date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+            
+            if(!dadosApp.historico) dadosApp.historico = [];
+            dadosApp.historico.unshift(log);
+            if(dadosApp.historico.length > 10) dadosApp.historico.pop();
+
+            fetch(DB_URL, {
+                method: 'PUT',
+                body: JSON.stringify(dadosApp)
+            }).then(() => {
+                atualizarInterface();
+                hideModal();
+                document.getElementById('input-val').value = '';
+            });
+        }
+
+        function atualizarInterface() {
+            document.getElementById('val-g').innerText = (dadosApp.saldoG || 0).toLocaleString('pt-BR');
+            document.getElementById('val-f').innerText = (dadosApp.saldoF || 0).toLocaleString('pt-BR');
+            document.getElementById('bar-g').style.width = Math.min(((dadosApp.saldoG || 0)/50000 * 100), 100) + '%';
+            document.getElementById('bar-f').style.width = Math.min(((dadosApp.saldoF || 0)/50000 * 100), 100) + '%';
+            document.getElementById('total').innerText = 'R$ ' + ((dadosApp.saldoG || 0) + (dadosApp.saldoF || 0)).toLocaleString('pt-BR');
+
+            const logDiv = document.getElementById('activity-log');
+            logDiv.innerHTML = (dadosApp.historico || []).map(item => `
+                <div class="activity-item">
+                    <span><strong>${item.user}</strong> ${item.val > 0 ? 'adicionou' : 'removeu'} R$ ${Math.abs(item.val)}</span>
+                    <span style="opacity:0.5">${item.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function showModal() { document.getElementById('modal').style.display = 'block'; }
+        function hideModal() { document.getElementById('modal').style.display = 'none'; }
+        
+        function demolirCasa() {
+            if(confirm("Deseja realmente demolir o sonho na nuvem?")) {
+                fetch(DB_URL, { method: 'DELETE' }).then(() => location.reload());
+            }
+        }
+    </script>
+</body>
+</html>
