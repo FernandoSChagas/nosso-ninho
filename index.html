@@ -3,180 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nosso Ninho - Ultra Glass 2.0</title>
+    <title>Nosso Ninho - Home</title>
     
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --accent-blue: #007AFF;
-            --accent-pink: #FF2D55;
-            --accent-green: #34C759;
-            --text-main: #1d1d1f;
+            --ninho-gold: #fbb000;
+            --ninho-bg: #f9f9f7;
+            --text-main: #2d2d2d;
+            --text-muted: #8e8e93;
+            --card-white: #ffffff;
+            --success-green: #34c759;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body { 
-            background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000') no-repeat center center fixed;
-            background-size: cover;
+            background: var(--ninho-bg);
             height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden;
         }
 
-        .iphone-container {
+        .app-shell {
             width: 100%; max-width: 420px; height: 100dvh;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-            display: flex; flex-direction: column; position: relative; overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.2);
+            background: var(--ninho-bg); display: flex; flex-direction: column; position: relative; overflow: hidden;
         }
 
-        /* LOGIN SCREEN */
-        #login-screen {
-            position: absolute; inset: 0; z-index: 5000;
-            background: rgba(0,0,0,0.2); display: none; flex-direction: column; 
-            align-items: center; justify-content: center; padding: 40px; text-align: center;
+        /* LOGIN (Mantendo o estilo anterior de sucesso) */
+        #login-screen { position: absolute; inset: 0; z-index: 5000; background: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+
+        /* TOP HEADER */
+        .top-nav { padding: 40px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-small { width: 100px; }
+
+        /* WELCOME AREA */
+        .welcome-section { padding: 10px 20px 20px; }
+        .welcome-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+        .welcome-section p { font-size: 0.85rem; color: var(--text-muted); }
+        .welcome-section span { color: var(--ninho-gold); font-weight: 700; }
+
+        /* MAIN BALANCE CARD */
+        .card-saldo {
+            margin: 0 20px 15px; padding: 25px; background: var(--card-white); border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; overflow: hidden;
         }
-        .login-card { background: var(--glass-bg); padding: 35px; border-radius: 40px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .card-saldo h3 { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+        .card-saldo .total-amount { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
+        .card-saldo .month-diff { font-size: 0.75rem; color: var(--success-green); font-weight: 700; }
+        .card-saldo .tijolos-img { position: absolute; right: -10px; top: 20px; width: 110px; opacity: 0.9; }
 
-        /* GAUGE CHART (CORRIGIDO: ESQUERDA PARA DIREITA) */
-        .chart-box { position: relative; width: 220px; height: 120px; margin: 0 auto; display: flex; justify-content: center; align-items: flex-end; }
-        .gauge-svg { width: 100%; height: 100%; }
-        .gauge-bg { fill: none; stroke: rgba(0,0,0,0.05); stroke-width: 10; stroke-linecap: round; }
-        .gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .gauge-label { position: absolute; bottom: 0; font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
-
-        .header { padding: 45px 25px 15px; }
-        .main-card { margin: 10px 20px; padding: 25px; background: var(--glass-bg); border-radius: 35px; border: 1px solid var(--glass-border); text-align: center; }
-
-        .user-grid { display: flex; gap: 12px; padding: 15px 20px; }
-        .u-card { flex: 1; padding: 15px; background: var(--glass-bg); border-radius: 30px; border: 1px solid var(--glass-border); text-align: center; }
-        .u-card img { width: 45px; height: 45px; border-radius: 50%; border: 3px solid white; margin-bottom: 8px; }
-        
-        .cdi-info { font-size: 0.65rem; font-weight: 800; color: var(--accent-green); text-transform: uppercase; margin-top: 5px; }
-
-        .log-section { flex: 1; padding: 10px 25px; overflow-y: auto; margin-bottom: 90px; }
-        .log-item { padding: 12px 15px; background: rgba(255,255,255,0.4); border-radius: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-
-        .footer-nav { position: absolute; bottom: 20px; left: 20px; right: 20px; height: 70px; background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); border-radius: 25px; display: flex; align-items: center; justify-content: space-around; border: 1px solid var(--glass-border); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .nav-link { text-align: center; color: #1d1d1f; opacity: 0.4; font-size: 0.65rem; font-weight: 800; cursor: pointer; }
-        .nav-link.active { color: var(--accent-blue); opacity: 1; }
-
-        .btn-ios { flex: 1; padding: 18px; border-radius: 20px; border: none; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
-        .btn-primary { background: var(--text-main); color: white; }
-        .btn-secondary { background: white; color: var(--text-main); border: 1px solid rgba(0,0,0,0.05); }
-
-        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; padding: 30px; }
-        .modal-body { background: white; width: 100%; padding: 35px; border-radius: 40px; text-align: center; }
-
-        /* PANDORA RESPONSIVA */
-        .pandora-grid {
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); 
-            gap: 6px; 
-            padding: 20px; 
-            overflow-y: auto;
-            flex: 1;
-            margin-bottom: 90px;
+        /* GOAL CARD */
+        .card-meta {
+            margin: 0 20px 15px; padding: 20px; background: var(--card-white); border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px;
         }
+        .goal-icon { width: 45px; height: 45px; background: #fff8e6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .goal-info { flex: 1; }
+        .goal-info p { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+        .goal-info h4 { font-size: 1rem; font-weight: 800; color: var(--text-main); margin: 2px 0; }
+        .progress-track { width: 100%; height: 6px; background: #f0f0f0; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--ninho-gold); transition: width 1.5s ease; border-radius: 10px; }
+
+        /* QUICK ACTIONS */
+        .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 20px; }
+        .action-item { text-align: center; }
+        .action-circle { width: 100%; aspect-ratio: 1; background: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .action-item p { font-size: 0.6rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+
+        /* LISTA DE MOVIMENTAÇÕES */
+        .section-header { display: flex; justify-content: space-between; padding: 0 20px 10px; align-items: center; }
+        .section-header h5 { font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
+        .section-header a { font-size: 0.75rem; color: var(--ninho-gold); font-weight: 700; text-decoration: none; }
+
+        .log-container { flex: 1; padding: 0 20px; overflow-y: auto; margin-bottom: 90px; }
+        .log-row { padding: 15px 0; border-bottom: 1px solid #f1f1f1; display: flex; align-items: center; gap: 15px; }
+        .log-icon-box { width: 40px; height: 40px; background: #f9f9f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .log-details { flex: 1; }
+        .log-details b { font-size: 0.8rem; color: var(--text-main); display: block; }
+        .log-details small { font-size: 0.7rem; color: var(--text-muted); }
+        .log-value { font-size: 0.85rem; font-weight: 800; color: var(--success-green); }
+
+        /* FOOTER TAB BAR */
+        .footer-tabs {
+            position: absolute; bottom: 0; width: 100%; height: 85px; background: white;
+            display: flex; justify-content: space-around; align-items: center;
+            padding-bottom: 25px; border-top: 1px solid #f1f1f1; z-index: 1000;
+        }
+        .tab-btn { text-align: center; color: #b2bec3; font-size: 0.65rem; font-weight: 700; }
+        .tab-btn.active { color: var(--ninho-gold); }
+        .tab-btn i { display: block; font-size: 1.4rem; margin-bottom: 2px; font-style: normal; }
+
+        .center-btn {
+            position: absolute; bottom: 45px; left: 50%; transform: translateX(-50%);
+            width: 60px; height: 60px; background: var(--ninho-gold); border-radius: 20px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white;
+            box-shadow: 0 8px 20px rgba(251, 176, 0, 0.4); z-index: 1100;
+        }
+
+        /* MODAL */
+        #modal { position: absolute; inset: 0; z-index: 6000; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 30px; }
+        .modal-card { background: white; width: 100%; padding: 35px; border-radius: 35px; text-align: center; }
+        .input-ninho { width: 100%; border: none; border-bottom: 2px solid #eee; padding: 15px; font-size: 2rem; text-align: center; margin-bottom: 25px; outline: none; font-weight: 800; }
+
+        /* PANDORA VIEW */
+        .pandora-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); gap: 6px; padding: 20px; overflow-y: auto; flex: 1; margin-bottom: 90px; }
+        .tile { aspect-ratio: 1; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #aaa; font-weight: 800; border: 1px solid #f1f1f1; cursor: pointer; }
+        .tile.active { background: var(--ninho-gold); color: white; border: none; }
     </style>
 </head>
 <body>
 
-    <div class="iphone-container">
+    <div class="app-shell">
         
-        <!-- LOGIN SCREEN -->
-        <div id="login-screen">
-            <div class="login-card">
-                <h1 style="font-weight:800; margin-bottom:10px;">Future Nest</h1>
-                <p style="font-size:0.8rem; color:#8e8e93; margin-bottom:30px;">O amanhã começa hoje.</p>
-                <input type="email" id="login-email" class="btn-ios btn-secondary" style="width:100%; margin-bottom:10px; text-align:left;" placeholder="E-mail">
-                <input type="password" id="login-pass" class="btn-ios btn-secondary" style="width:100%; margin-bottom:20px; text-align:left;" placeholder="Senha">
-                <button class="btn-ios btn-primary" style="width:100%" onclick="login()">Desbloquear</button>
-            </div>
+        <!-- TOP NAVBAR -->
+        <div class="top-nav">
+            <span style="font-size: 1.5rem;">≡</span>
+            <img src="https://i.ibb.co/6YhT3zX/casa-fundo.png" class="logo-small" style="display:none;"> <!-- Reservado para logo real -->
+            <span style="font-size: 1.5rem;">🔔</span>
         </div>
 
         <div id="tab-ninho" class="tab-content active" style="display:flex; flex-direction:column; height:100%;">
-            <div class="header">
-                <p id="welcome-msg">Carregando...</p>
-                <h1>Meta 100K Total</h1>
+            <div class="welcome-section">
+                <h2 id="welcome-msg">Olá, Fernando! 👋</h2>
+                <p>Vamos construir seu <span>novo lar!</span></p>
             </div>
 
-            <div class="main-card">
-                <div class="chart-box">
-                    <svg class="gauge-svg" viewBox="0 0 100 50">
-                        <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
-                        <!-- Gráfico corrigido para preencher da esquerda para a direita -->
-                        <path id="global-arc" class="gauge-fill" style="stroke:var(--accent-blue)" d="M10,45 A35,35 0 0,1 90,45" />
-                    </svg>
-                    <div id="global-perc" class="gauge-label">0%</div>
+            <div class="card-saldo">
+                <h3>Saldo de Tijolos ⓘ</h3>
+                <div class="total-amount" id="total">R$ 0,00</div>
+                <div class="month-diff">📈 + R$ <span id="cdi-val">0,00</span> (CDI 115%)</div>
+                <!-- Simulação do ícone de tijolos da imagem -->
+                <div class="tijolos-img">📦📦📦</div> 
+            </div>
+
+            <div class="card-meta">
+                <div class="goal-icon">🎯</div>
+                <div class="goal-info">
+                    <p>Meta da Casa</p>
+                    <h4>R$ 100.000,00</h4>
+                    <div class="progress-track"><div id="global-bar" class="progress-fill"></div></div>
                 </div>
-                <h2 id="total" style="font-size: 2rem; margin-top:10px;">R$ 0,00</h2>
+                <span id="global-perc" style="font-size:0.75rem; font-weight:800; color:var(--ninho-gold)">0%</span>
             </div>
 
-            <div class="user-grid">
-                <div class="u-card">
-                    <img src="foto-gabriel.png">
-                    <div class="chart-box" style="width:100px; height:50px;">
-                        <svg class="gauge-svg" viewBox="0 0 100 50">
-                            <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
-                            <path id="arc-g" class="gauge-fill" style="stroke:var(--accent-green)" d="M10,45 A35,35 0 0,1 90,45" />
-                        </svg>
-                    </div>
-                    <h3 id="val-g">0</h3>
-                    <div class="cdi-info">+ R$ <span id="cdi-g">0</span></div>
-                </div>
-                <div class="u-card">
-                    <img src="foto-fernando.png">
-                    <div class="chart-box" style="width:100px; height:50px;">
-                        <svg class="gauge-svg" viewBox="0 0 100 50">
-                            <path class="gauge-bg" d="M10,45 A35,35 0 0,1 90,45" />
-                            <path id="arc-f" class="gauge-fill" style="stroke:var(--accent-pink)" d="M10,45 A35,35 0 0,1 90,45" />
-                        </svg>
-                    </div>
-                    <h3 id="val-f">0</h3>
-                    <div class="cdi-info">+ R$ <span id="cdi-f">0</span></div>
-                </div>
+            <div class="actions-grid">
+                <div class="action-item" onclick="showModal('add')"><div class="action-circle">🧱</div><p>Adicionar<br>tijolos</p></div>
+                <div class="action-item"><div class="action-circle">📅</div><p>Programar<br>aporte</p></div>
+                <div class="action-item"><div class="action-circle">📊</div><p>Meus<br>aportes</p></div>
+                <div class="action-item"><div class="action-circle">🎯</div><p>Metas e<br>planejamento</p></div>
             </div>
 
-            <div class="log-section"><div id="activity-log"></div></div>
-
-            <div class="actions-btn" style="padding:0 20px 100px; display:flex; gap:10px;">
-                <button class="btn-ios btn-primary" onclick="showModal('add')">CONSTRUIR</button>
-                <button class="btn-ios btn-secondary" onclick="showModal('remove')">DEMOLIR</button>
+            <div class="section-header">
+                <h5>Últimas movimentações</h5>
+                <a href="#">Ver todas</a>
             </div>
+
+            <div class="log-container" id="activity-log"></div>
         </div>
 
+        <!-- PANDORA VIEW -->
         <div id="tab-pandora" class="tab-content" style="display:none; flex-direction:column; height:100%;">
-            <div class="header"><h1>Cofre Pandora</h1></div>
-            <div class="main-card"><h2 id="pandora-status">R$ 0</h2></div>
+            <div class="welcome-section">
+                <h2>Cofre Pandora</h2>
+                <p>Meta Especial: <span>R$ 5.000</span></p>
+            </div>
+            <div class="card-meta">
+                <div class="goal-icon">🎁</div>
+                <div class="goal-info">
+                    <p>Total Guardado</p>
+                    <h4 id="pandora-status">R$ 0,00</h4>
+                    <div class="progress-track"><div id="pandora-bar" class="progress-fill"></div></div>
+                </div>
+            </div>
             <div id="grid-container" class="pandora-grid"></div>
         </div>
 
-        <div class="footer-nav">
-            <div class="nav-link active" id="nav-ninho" onclick="switchTab('ninho', this)">STATUS</div>
-            <div class="nav-link" id="nav-pandora" onclick="switchTab('pandora', this)">PANDORA</div>
-            <div class="nav-link" onclick="logout()">SAIR</div>
+        <!-- CENTER BUTTON (Ação principal) -->
+        <div class="center-btn" onclick="showModal('add')">＋</div>
+
+        <!-- FOOTER NAV -->
+        <div class="footer-tabs">
+            <div class="tab-btn active" id="nav-ninho" onclick="switchTab('ninho', this)"><i>🏠</i>Início</div>
+            <div class="tab-btn"><i>💼</i>Carteira</div>
+            <div style="width: 60px;"></div> <!-- Espaço para o botão central -->
+            <div class="tab-btn" id="nav-pandora" onclick="switchTab('pandora', this)"><i>🎁</i>Cofre</div>
+            <div class="tab-btn" onclick="logout()"><i>👤</i>Perfil</div>
         </div>
 
-        <div id="modal"><div class="modal-body">
-            <h3 id="modal-title">Valor</h3>
-            <input type="number" id="input-val" style="width:100%; border:none; border-bottom:2px solid #eee; font-size:2rem; text-align:center; margin:20px 0; outline:none;" placeholder="0">
-            <div style="display:flex; gap:10px;">
-                <button class="btn-ios btn-primary" style="flex:2" onclick="processar()" id="btn-confirmar">OK</button>
-                <button class="btn-ios btn-secondary" style="flex:1" onclick="hideModal()">Voltar</button>
+        <!-- MODAL -->
+        <div id="modal">
+            <div class="modal-card">
+                <h3 id="modal-title">Novo Aporte</h3>
+                <input type="number" id="input-val" class="input-ninho" placeholder="0" inputmode="decimal">
+                <div style="display:flex; gap:12px;">
+                    <button style="flex:2; padding:18px; border-radius:15px; background:var(--ninho-gold); color:white; border:none; font-weight:800;" onclick="processar()" id="btn-confirmar">Confirmar</button>
+                    <button style="flex:1; padding:18px; border-radius:15px; background:#f0f0f0; color:#888; border:none; font-weight:800;" onclick="hideModal()">Voltar</button>
+                </div>
             </div>
-        </div></div>
+        </div>
     </div>
 
     <script>
@@ -198,23 +231,15 @@
         const pandoraValues = rawValues.sort(() => 0.5 - Math.random());
 
         auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('login-screen').style.display = 'none';
-                conectarFirebase();
-            } else { document.getElementById('login-screen').style.display = 'flex'; }
+            if (user) { conectarFirebase(); } 
+            else { window.location.href = "login.html"; } // Assumindo que a página de login está separada ou oculta
         });
-
-        function login() {
-            const e = document.getElementById('login-email').value;
-            const p = document.getElementById('login-pass').value;
-            auth.signInWithEmailAndPassword(e, p).catch(() => alert("Erro"));
-        }
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function switchTab(tab, el) {
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-            document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(i => i.classList.remove('active'));
             document.getElementById('tab-' + tab).style.display = 'flex';
             if(el) el.classList.add('active');
         }
@@ -227,29 +252,17 @@
             setTimeout(conectarFirebase, 5000);
         }
 
-        function setArc(id, percent) {
-            const path = document.getElementById(id);
-            // Corrige a lógica do dashoffset para carregar da esquerda para a direita no sentido horário
-            const dash = 251 - (251 * (Math.min(percent, 100) / 100));
-            path.style.strokeDashoffset = dash;
-        }
-
         function processar() {
             const input = document.getElementById('input-val');
             let v = parseFloat(input.value);
             if(isNaN(v) || v === 0) return;
             const currentUser = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
 
-            if(currentMode === 'remove') {
-                const saldoAtual = currentUser === 'Gabriel' ? (dadosApp.saldoG || 0) : (dadosApp.saldoF || 0);
-                if(v > saldoAtual) { alert("Saldo insuficiente."); return; }
-                v = -v;
-            } else {
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#007AFF', '#FF2D55'] });
-            }
+            if(currentMode === 'remove') v = -v;
+            else confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbb000', '#ffffff'] });
 
             if(currentUser === 'Gabriel') dadosApp.saldoG += v; else dadosApp.saldoF += v;
-            dadosApp.historico.unshift({ user: currentUser, val: v, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+            dadosApp.historico.unshift({ user: currentUser, val: v, date: new Date().toLocaleDateString('pt-BR'), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
             salvar();
         }
 
@@ -262,8 +275,7 @@
 
         function salvar() {
             auth.currentUser.getIdToken(true).then(token => {
-                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) })
-                .then(() => { atualizarInterface(); hideModal(); });
+                fetch(`${firebaseConfig.databaseURL}.json?auth=${token}`, { method: 'PUT', body: JSON.stringify(dadosApp) }).then(() => { atualizarInterface(); hideModal(); });
             });
         }
 
@@ -273,32 +285,33 @@
             const totalVal = sG + sF;
             const user = auth.currentUser.email.includes('fernando') ? 'Fernando' : 'Gabriel';
             
-            document.getElementById('welcome-msg').innerText = `Bem-vindo, ${user}!`;
-            document.getElementById('val-g').innerText = `R$ ${sG.toLocaleString('pt-BR')}`;
-            document.getElementById('val-f').innerText = `R$ ${sF.toLocaleString('pt-BR')}`;
-            document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR');
+            document.getElementById('welcome-msg').innerText = `Olá, ${user}! 👋`;
+            document.getElementById('total').innerText = 'R$ ' + totalVal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('cdi-val').innerText = (totalVal * 0.0095).toLocaleString('pt-BR', {minimumFractionDigits: 2});
             
-            document.getElementById('cdi-g').innerText = (sG * 0.0095).toLocaleString('pt-BR');
-            document.getElementById('cdi-f').innerText = (sF * 0.0095).toLocaleString('pt-BR');
-            
-            setArc('global-arc', (totalVal / 100000 * 100));
-            document.getElementById('global-perc').innerText = Math.floor((totalVal / 100000 * 100)) + '%';
-            setArc('arc-g', (sG / 50000 * 100));
-            setArc('arc-f', (sF / 50000 * 100));
+            const perc = Math.min((totalVal / 100000 * 100), 100);
+            document.getElementById('global-bar').style.width = perc + '%';
+            document.getElementById('global-perc').innerText = Math.floor(perc) + '%';
 
             const container = document.getElementById('grid-container');
             let totalP = 0;
             container.innerHTML = pandoraValues.map((v, i) => {
                 const active = (dadosApp.pandora || []).includes(i);
                 if(active) totalP += v;
-                return `<div onclick="togglePandora(${i})" style="aspect-ratio:1; background:${active ? 'var(--accent-blue)' : 'rgba(255,255,255,0.4)'}; border-radius:8px; font-size:0.6rem; display:flex; align-items:center; justify-content:center; color:${active ? '#fff' : 'rgba(0,0,0,0.3)'}; font-weight:800; border: 1px solid var(--glass-border);">${v}</div>`;
+                return `<div class="tile ${active ? 'active' : ''}" onclick="togglePandora(${i})">${v}</div>`;
             }).join('');
-            document.getElementById('pandora-status').innerText = `R$ ${totalP.toLocaleString('pt-BR')}`;
+            
+            document.getElementById('pandora-status').innerText = `R$ ${totalP.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('pandora-bar').style.width = (totalP / 5000 * 100) + '%';
             
             document.getElementById('activity-log').innerHTML = (dadosApp.historico || []).slice(0,5).map(i => `
-                <div class="log-item">
-                    <span><b>${i.user.toUpperCase()}</b><br><small>${i.date}</small></span>
-                    <b style="color:${i.val > 0 ? 'var(--accent-blue)' : 'var(--accent-pink)'}">${i.val > 0 ? '+' : '-'} ${Math.abs(i.val).toLocaleString('pt-BR')}</b>
+                <div class="log-row">
+                    <div class="log-icon-box">${i.val > 0 ? '🧱' : '🔨'}</div>
+                    <div class="log-details">
+                        <b>Aporte ${i.val > 0 ? 'manual' : 'removido'}</b>
+                        <small>${i.date}, ${i.time}</small>
+                    </div>
+                    <div class="log-value" style="color:${i.val > 0 ? 'var(--success-green)' : '#ff3b30'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
                 </div>
             `).join('');
         }
