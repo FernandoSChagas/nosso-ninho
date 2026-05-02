@@ -346,13 +346,17 @@
                 <div class="log-val" style="color:${i.val > 0 ? 'var(--success-green)' : 'var(--danger-red)'}">${i.val > 0 ? '+' : ''} R$ ${Math.abs(i.val).toLocaleString('pt-BR')}</div>
                 <small>${i.date} às ${i.time}</small></div>`).join('');
 
-            // LOGICA NINHO ANALYTICS
+            // LOGICA NINHO ANALYTICS COM BASE NO "DIA 1"
             const historico = dadosApp.historico || [];
-            if (historico.length > 1) {
+            if (historico.length >= 1) {
                 const dataInicioStr = historico[historico.length - 1].date.split('/').reverse().join('-');
                 const inicio = new Date(dataInicioStr);
                 const hoje = new Date();
-                const diasPassados = Math.max(1, Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)));
+                
+                // Calcula a diferença em dias (mínimo de 1 dia para evitar divisão por zero)
+                const diffTime = Math.abs(hoje - inicio);
+                const diasPassados = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+                
                 const mediaDiaria = totalVal / diasPassados;
                 const faltaVal = 100000 - totalVal;
                 
@@ -366,6 +370,8 @@
                     document.getElementById('data-conclusao').innerText = dataFinal.toLocaleDateString('pt-BR');
                 } else if (faltaVal <= 0) {
                     document.getElementById('data-conclusao').innerText = "Meta Atingida! 🎉";
+                    document.getElementById('ritmo-diario').innerText = "Concluído";
+                    document.getElementById('tempo-restante').innerText = "0";
                 }
             }
         }
